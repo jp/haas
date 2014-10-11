@@ -1,0 +1,8 @@
+en:
+  pige:
+    member_not_found: "Member not found."
+    pige_not_found: "You don't have a pige yet."
+    automated_pige_finished: "The automated pige is finished."
+    welcome: "Hi %{name}, you are registered for the pige."
+    welcome_partner: "%{name} is also registered as your partner."
+    automated_pige_error: "An error has occured while running the automated pige. Is there enough members defined ?"

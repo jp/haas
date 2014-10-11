@@ -1,0 +1,36 @@
+require 'active_record'
+require 'aws-sdk'
+require 'models/key_pair'
+require 'controllers/cluster_controller'
+
+# remove warning for not providing locales
+I18n.enforce_available_locales = true
+I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/*.{rb,yml}" )
+
+# Authenticate AWS
+
+AWS.config(
+  access_key_id: 'AKIAIG5RZFJGHH4JLBQQ',
+  secret_access_key: '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',
+  region: 'us-west-2'
+)
+
+
+############ create sqlite db in memory ############
+
+SQLITE_DB = ENV['PIGE_SQLITE_DB'] || "/tmp/cluster_launcher.db"
+
+ActiveRecord::Base.establish_connection(
+  adapter: "sqlite3",
+  database: SQLITE_DB
+)
+
+if !File.file?(SQLITE_DB)
+  ActiveRecord::Schema.define do
+    create_table :key_pairs do |table|
+      table.column :name, :string
+      table.column :private_key, :string
+    end
+    add_index :key_pairs, :name, unique: true
+  end
+end
