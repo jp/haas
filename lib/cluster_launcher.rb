@@ -10,11 +10,10 @@ I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/*.{rb,yml}" )
 # Authenticate AWS
 
 AWS.config(
-  access_key_id: 'AKIAIG5RZFJGHH4JLBQQ',
-  secret_access_key: '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',
+  access_key_id: ENV['AWS_KEY'],
+  secret_access_key: ENV['AWS_SECRET'],
   region: 'us-west-2'
 )
-
 
 ############ create sqlite db in memory ############
 
