@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.files        << "lib/models/key_pair.rb"
   s.files        << "lib/controllers/cluster_controller.rb"
 #  s.files        << "lib/server/pige_rack.rb"
-  s.files        << "lib/locales/pige.yml"
+  s.files        << "lib/locales/launcher.yml"
   s.executables = ['cluster_launcher']
   s.homepage    = 'http://github.com/jp/bigdata-cluster-launcher'
   s.license       = 'MIT'
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rack", "~> 1.5"
   s.add_dependency "thin", "~> 1.6"
   s.add_dependency "aws-sdk", "~> 1.55"
+  s.add_dependency "net-ssh", "~> 2.9"
 
   s.add_development_dependency "factory_girl", "~> 4.4"
   s.add_development_dependency "faker", "~> 1.3"
