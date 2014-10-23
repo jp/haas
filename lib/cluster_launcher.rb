@@ -1,3 +1,4 @@
+require 'net/ssh'
 require 'active_record'
 require 'aws-sdk'
 require 'models/key_pair'
@@ -17,7 +18,7 @@ AWS.config(
 
 ############ create sqlite db in memory ############
 
-SQLITE_DB = ENV['PIGE_SQLITE_DB'] || "/tmp/cluster_launcher.db"
+SQLITE_DB = ENV['SQLITE_DB'] || "/tmp/cluster_launcher.db"
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlite3",
