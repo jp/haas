@@ -46,10 +46,10 @@ class ChefController
     user = 'vagrant'
     password= 'vagrant'
 
-    require "chef"
+    require 'chef'
     require 'chef/knife'
     require 'chef/knife/bootstrap'
-    require "chef/knife/core/bootstrap_context"
+    require 'chef/knife/core/bootstrap_context'
     require 'chef/knife/ssh'
     require 'net/ssh'
     require 'net/ssh/multi'
