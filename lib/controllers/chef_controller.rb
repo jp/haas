@@ -25,23 +25,23 @@ class ChefController
     working_dir = "#{ENV['HOME']}/.haas/"
 
     conf = %{
-    log_level                    :info
-    log_location               STDOUT
-    node_name               "haas-api"
-    client_key                  "#{working_dir}/haas-api.pem"
-    validation_client_name   "haas"
-    validation_key           "#{working_dir}/haas-validator.pem"
-    chef_server_url        "https://192.168.20.12/organizations/haas"
-    cache_type               'BasicFile'
-    cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
-    cookbook_path         ["#{working_dir}/../cookbooks"]}
+      log_level                    :info
+      log_location               STDOUT
+      node_name               "haas-api"
+      client_key                  "#{working_dir}/haas-api.pem"
+      validation_client_name   "haas-validator"
+      validation_key           "#{working_dir}/haas-validator.pem"
+      chef_server_url        "https://192.168.20.12/organizations/haas"
+      cache_type               'BasicFile'
+      cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
+      cookbook_path         ["#{working_dir}/../cookbooks"]
+      }
 
     File.write("#{ENV['HOME']}/.haas/knife.rb", conf)
   end
 
 
   def bootstrap_node
-    # http://lists.opscode.com/sympa/arc/chef/2011-11/msg00228.html
     host = '192.168.20.12'
     user = 'vagrant'
     password= 'vagrant'
@@ -49,12 +49,23 @@ class ChefController
     require "chef"
     require 'chef/knife'
     require 'chef/knife/bootstrap'
+    require "chef/knife/core/bootstrap_context"
+    require 'chef/knife/ssh'
+    require 'net/ssh'
+    require 'net/ssh/multi'
 
     config_file = File.exists?(File.join(Dir.getwd, '.haas', 'knife.rb')) ?
                   File.join(Dir.getwd, '.haas', 'knife.rb') :
                   File.join(File.expand_path('~'), '.haas', 'knife.rb')
     Chef::Config.from_file(config_file)
     kb = Chef::Knife::Bootstrap.new
+    kb.config[:ssh_user]       = user
+    kb.config[:ssh_password]       = password
+#    kb.config[:run_list]       = options[:run_list]
+    kb.config[:use_sudo]       = true
+    kb.config[:chef_node_name] = name
+    kb.config[:identity_file] = "/home/jpellet/.haas/vagrant"
+    kb.config[:distro] = 'chef-full'
     kb.name_args = [host]
     kb.run
   end
