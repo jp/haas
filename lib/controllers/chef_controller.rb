@@ -12,6 +12,12 @@ class ChefController
       ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
       ssh.exec!("sudo rpm -ivh #{chef_server_local_path}")
       ssh.exec!("chef-server-ctl reconfigure")
+
+      client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
+      File.write("#{ENV['HOME']}/.haas/haas-api.pem", client_key)
+
+      org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
+      File.write("#{ENV['HOME']}/.haas/haas-validator.pem", org_validator_key)
     end
   end
 end
