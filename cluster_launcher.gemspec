@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency "thin", "~> 1.6"
   s.add_dependency "aws-sdk", "~> 1.55"
   s.add_dependency "net-ssh", "~> 2.9"
+  s.add_dependency "chef", "~> 11.16"
 
   s.add_development_dependency "factory_girl", "~> 4.4"
   s.add_development_dependency "faker", "~> 1.3"
