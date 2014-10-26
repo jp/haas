@@ -20,6 +20,44 @@ class ChefController
       File.write("#{ENV['HOME']}/.haas/haas-validator.pem", org_validator_key)
     end
   end
+
+  def.write_knife_config_file
+    working_dir = "#{ENV['HOME']}/.haas/"
+
+    conf = %{
+    log_level                    :info
+    log_location               STDOUT
+    node_name               "haas-api"
+    client_key                  "#{working_dir}/haas-api.pem"
+    validation_client_name   "haas"
+    validation_key           "#{working_dir}/haas-validator.pem"
+    chef_server_url        "https://192.168.20.12/organizations/haas"
+    cache_type               'BasicFile'
+    cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
+    cookbook_path         ["#{working_dir}/../cookbooks"]}
+
+    File.write("#{ENV['HOME']}/.haas/knife.rb", conf)
+  end
+
+
+  def bootstrap_node
+    # http://lists.opscode.com/sympa/arc/chef/2011-11/msg00228.html
+    host = '192.168.20.12'
+    user = 'vagrant'
+    password= 'vagrant'
+
+    require "chef"
+    require 'chef/knife'
+    require 'chef/knife/bootstrap'
+
+    config_file = File.exists?(File.join(Dir.getwd, '.haas', 'knife.rb')) ?
+                  File.join(Dir.getwd, '.haas', 'knife.rb') :
+                  File.join(File.expand_path('~'), '.haas', 'knife.rb')
+    Chef::Config.from_file(config_file)
+    kb = Chef::Knife::Bootstrap.new
+    kb.name_args = [host]
+    kb.run
+  end
 end
 
 
