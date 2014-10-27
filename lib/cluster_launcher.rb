@@ -23,7 +23,7 @@ Dir.mkdir(HAAS_WORKING_DIR) unless File.exists?(HAAS_WORKING_DIR)
 
 ############ create sqlite db in memory ############
 
-SQLITE_DB = ENV['SQLITE_DB'] || File.join(HAAS_WORKING_DIR,"cluster_launcher.db")
+SQLITE_DB = ENV['SQLITE_DB'] || File.join(HAAS_WORKING_DIR,"haas_sqlite3.db")
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlite3",
