@@ -2,6 +2,7 @@ require 'net/ssh'
 require 'active_record'
 require 'aws-sdk'
 require 'models/key_pair'
+require 'models/node'
 require 'controllers/cluster_controller'
 
 # remove warning for not providing locales
@@ -37,4 +38,10 @@ if !File.file?(SQLITE_DB)
       table.column :private_key, :string
     end
     add_index :key_pairs, :name, unique: true
+
+    create_table :nodes do |table|
+      table.column :ip, :string
+      table.column :chef_server, :boolean
+    end
+  end
 end
