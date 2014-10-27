@@ -1,18 +1,18 @@
 Gem::Specification.new do |s|
-  s.name        = 'bigdata-cluster-launcher'
+  s.name        = 'haas'
   s.version     = '0.0.1'
   s.date        = '2014-10-01'
   s.summary     = "Launch big data cluster in the cloud"
   s.description     = "Automatically launch Hadoop or Spark clusters in the cloud"
   s.authors     = ["Julien Pellet"]
   s.email       = 'jp@julienpellet.com'
-  s.files        << "lib/cluster_launcher.rb"
+  s.files        << "lib/haas.rb"
   s.files        << "lib/models/key_pair.rb"
   s.files        << "lib/controllers/cluster_controller.rb"
 #  s.files        << "lib/server/pige_rack.rb"
   s.files        << "lib/locales/launcher.yml"
-  s.executables = ['cluster_launcher']
-  s.homepage    = 'http://github.com/jp/bigdata-cluster-launcher'
+  s.executables = ['haas']
+  s.homepage    = 'http://github.com/jp/haas'
   s.license       = 'MIT'
 
   s.add_dependency "activerecord", "~> 4.1"
