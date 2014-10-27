@@ -16,9 +16,14 @@ AWS.config(
   region: 'us-west-2'
 )
 
+# Create Haas folder
+
+HAAS_WORKING_DIR = File.join(File.expand_path('~'), '.haas')
+Dir.mkdir(HAAS_WORKING_DIR) unless File.exists?(HAAS_WORKING_DIR)
+
 ############ create sqlite db in memory ############
 
-SQLITE_DB = ENV['SQLITE_DB'] || "/tmp/cluster_launcher.db"
+SQLITE_DB = ENV['SQLITE_DB'] || File.join(HAAS_WORKING_DIR,"cluster_launcher.db")
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlite3",
@@ -32,5 +37,4 @@ if !File.file?(SQLITE_DB)
       table.column :private_key, :string
     end
     add_index :key_pairs, :name, unique: true
-  end
 end

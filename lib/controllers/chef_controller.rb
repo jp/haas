@@ -1,4 +1,8 @@
 class ChefController
+
+# net ssh use identify file
+# http://stackoverflow.com/questions/6833514/cannot-connect-using-keys-with-ruby-and-net-ssh
+
   def self.install_chef_server
     host = '192.168.20.12'
     user = 'vagrant'
@@ -14,30 +18,28 @@ class ChefController
       ssh.exec!("chef-server-ctl reconfigure")
 
       client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
-      File.write("#{ENV['HOME']}/.haas/haas-api.pem", client_key)
+      File.write(File.join(HAAS_WORKING_DIR,"/haas-api.pem"), client_key)
 
       org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
-      File.write("#{ENV['HOME']}/.haas/haas-validator.pem", org_validator_key)
+      File.write(File.join(HAAS_WORKING_DIR,"/haas-validator.pem"), org_validator_key)
     end
   end
 
   def.write_knife_config_file
-    working_dir = "#{ENV['HOME']}/.haas/"
-
     conf = %{
       log_level                    :info
       log_location               STDOUT
       node_name               "haas-api"
-      client_key                  "#{working_dir}/haas-api.pem"
+      client_key                  "#{HAAS_WORKING_DIR}/haas-api.pem"
       validation_client_name   "haas-validator"
-      validation_key           "#{working_dir}/haas-validator.pem"
+      validation_key           "#{HAAS_WORKING_DIR}/haas-validator.pem"
       chef_server_url        "https://192.168.20.12/organizations/haas"
       cache_type               'BasicFile'
       cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
-      cookbook_path         ["#{working_dir}/../cookbooks"]
+      cookbook_path         ["#{HAAS_WORKING_DIR}/cookbooks"]
       }
 
-    File.write("#{ENV['HOME']}/.haas/knife.rb", conf)
+    File.write(File.join(HAAS_WORKING_DIR,"knife.rb"), conf)
   end
 
 
@@ -54,9 +56,7 @@ class ChefController
     require 'net/ssh'
     require 'net/ssh/multi'
 
-    config_file = File.exists?(File.join(Dir.getwd, '.haas', 'knife.rb')) ?
-                  File.join(Dir.getwd, '.haas', 'knife.rb') :
-                  File.join(File.expand_path('~'), '.haas', 'knife.rb')
+    config_file = File.join(HAAS_WORKING_DIR, 'knife.rb')
     Chef::Config.from_file(config_file)
     kb = Chef::Knife::Bootstrap.new
     kb.config[:ssh_user]       = user
@@ -64,7 +64,7 @@ class ChefController
 #    kb.config[:run_list]       = options[:run_list]
     kb.config[:use_sudo]       = true
     kb.config[:chef_node_name] = name
-    kb.config[:identity_file] = "/home/jpellet/.haas/vagrant"
+    kb.config[:identity_file] = File.join(HAAS_WORKING_DIR,"vagrant")
     kb.config[:distro] = 'chef-full'
     kb.name_args = [host]
     kb.run
