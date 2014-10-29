@@ -2,7 +2,7 @@ class ClusterController
 
   def self.launch
     count = 2
-    if AwsController.nb_instance_available < count
+    if AwsController.nb_instance_available >= count
       AwsController.create_key_pair
       instances = AwsController.launch_instances('us-west-2',count,'m3.medium')
       instances.each do |instance|
