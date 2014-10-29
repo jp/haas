@@ -18,10 +18,10 @@ class ChefController
       ssh.exec!("chef-server-ctl reconfigure")
 
       client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
-      File.write(File.join(HAAS_WORKING_DIR,"/haas-api.pem"), client_key)
+      File.write(File.join(Haas::WORKING_DIR,"/haas-api.pem"), client_key)
 
       org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
-      File.write(File.join(HAAS_WORKING_DIR,"/haas-validator.pem"), org_validator_key)
+      File.write(File.join(Haas::WORKING_DIR,"/haas-validator.pem"), org_validator_key)
     end
   end
 
@@ -30,16 +30,16 @@ class ChefController
       log_level                    :info
       log_location               STDOUT
       node_name               "haas-api"
-      client_key                  "#{HAAS_WORKING_DIR}/haas-api.pem"
+      client_key                  "#{Haas::WORKING_DIR}/haas-api.pem"
       validation_client_name   "haas-validator"
-      validation_key           "#{HAAS_WORKING_DIR}/haas-validator.pem"
+      validation_key           "#{Haas::WORKING_DIR}/haas-validator.pem"
       chef_server_url        "https://192.168.20.12/organizations/haas"
       cache_type               'BasicFile'
       cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
-      cookbook_path         ["#{HAAS_WORKING_DIR}/cookbooks"]
+      cookbook_path         ["#{Haas::WORKING_DIR}/cookbooks"]
       }
 
-    File.write(File.join(HAAS_WORKING_DIR,"knife.rb"), conf)
+    File.write(File.join(Haas::WORKING_DIR,"knife.rb"), conf)
   end
 
 
@@ -56,7 +56,7 @@ class ChefController
     require 'net/ssh'
     require 'net/ssh/multi'
 
-    config_file = File.join(HAAS_WORKING_DIR, 'knife.rb')
+    config_file = File.join(Haas::WORKING_DIR, 'knife.rb')
     Chef::Config.from_file(config_file)
     kb = Chef::Knife::Bootstrap.new
     kb.config[:ssh_user]       = user
@@ -64,7 +64,7 @@ class ChefController
 #    kb.config[:run_list]       = options[:run_list]
     kb.config[:use_sudo]       = true
     kb.config[:chef_node_name] = name
-    kb.config[:identity_file] = File.join(HAAS_WORKING_DIR,"vagrant")
+    kb.config[:identity_file] = File.join(Haas::WORKING_DIR,"vagrant")
     kb.config[:distro] = 'chef-full'
     kb.name_args = [host]
     kb.run

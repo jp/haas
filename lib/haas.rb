@@ -1,6 +1,7 @@
 require 'net/ssh'
 require 'active_record'
 require 'aws-sdk'
+require 'haas_config'
 require 'models/key_pair'
 require 'models/node'
 require 'controllers/cluster_controller'
@@ -21,12 +22,11 @@ AWS.config(
 
 # Create Haas folder
 
-HAAS_WORKING_DIR = File.join(File.expand_path('~'), '.haas')
-Dir.mkdir(HAAS_WORKING_DIR) unless File.exists?(HAAS_WORKING_DIR)
+Dir.mkdir(HaasConfig::WORKING_DIR) unless File.exists?(HaasConfig::WORKING_DIR)
 
 ############ create sqlite db in memory ############
 
-SQLITE_DB = ENV['SQLITE_DB'] || File.join(HAAS_WORKING_DIR,"haas_sqlite3.db")
+SQLITE_DB = ENV['SQLITE_DB'] || File.join(HaasConfig::WORKING_DIR,"haas_sqlite3.db")
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlite3",

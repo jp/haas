@@ -1,6 +1,6 @@
 class AwsController
 
-  IDENTITY_FILE = File.join(HAAS_WORKING_DIR,"/ssh-haas.pem")
+  IDENTITY_FILE = File.join(HaasConfig::WORKING_DIR,"/ssh-haas.pem")
   KEYPAIR_NAME = "haas-gem"
   CENTOS_7_IMAGES = {
     "us-east-1"=>"ami-96a818fe",
