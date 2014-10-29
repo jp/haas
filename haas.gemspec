@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.email       = 'jp@julienpellet.com'
   s.files        << "lib/haas.rb"
   s.files        << "lib/models/key_pair.rb"
+  s.files        << "lib/models/node.rb"
   s.files        << "lib/controllers/cluster_controller.rb"
 #  s.files        << "lib/server/pige_rack.rb"
   s.files        << "lib/locales/launcher.yml"
