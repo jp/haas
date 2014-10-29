@@ -27,7 +27,7 @@ class AwsController
     File.chmod(0600, IDENTITY_FILE)
   end
 
-  def launch_instances(region, count, instance_type)
+  def self.launch_instances(region, count, instance_type)
     image_id = CENTOS_7_IMAGES[region]
 
     ec2 = AWS::EC2.new

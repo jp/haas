@@ -25,7 +25,7 @@ class ChefController
     end
   end
 
-  def.write_knife_config_file
+  def self.write_knife_config_file
     conf = %{
       log_level                    :info
       log_location               STDOUT
@@ -43,7 +43,7 @@ class ChefController
   end
 
 
-  def bootstrap_node
+  def self.bootstrap_node
     host = '192.168.20.12'
     user = 'vagrant'
     password= 'vagrant'
