@@ -1,13 +1,5 @@
 class AwsController
 
-# Get the nb limit of instances on AWS with :
-# http://docs.aws.amazon.com/AWSRubySDK/latest/AWS/EC2/Client.html#describe_account_attributes-instance_method
-# ec2 = AWS::EC2.new
-# ec2.client.describe_account_attributes.data[:account_attribute_set].select {|a| a[:attribute_name]=="max-instances"}
-# 
-# existing instances in region : 
-# ec2.instances.inject({}) { |m, i| m[i.id] = i.status; m }
-
   IDENTITY_FILE = File.join(HAAS_WORKING_DIR,"/ssh-haas.pem")
   KEYPAIR_NAME = "haas-gem"
   CENTOS_7_IMAGES = {
