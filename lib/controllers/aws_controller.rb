@@ -27,7 +27,15 @@ CENTOS_7_IMAGES = {
       :image_id => image_id,
       :instance_type => "m3.medium",
       :key_name => "haas-manual",
-      :block_device_mappings => [{
+      :block_device_mappings => [
+        {
+          :device_name => "/dev/sda1",
+          :ebs => {
+            :volume_size => 8, # 8 GiB
+            :delete_on_termination => true
+          }
+        },
+        {
         :device_name => "/dev/sdf",
         :virtual_name => "ephemeral0"
       }],
