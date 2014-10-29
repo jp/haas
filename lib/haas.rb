@@ -40,7 +40,9 @@ if !File.file?(SQLITE_DB)
     add_index :key_pairs, :name, unique: true
 
     create_table :nodes do |table|
-      table.column :ip, :string
+      table.column :instance_id, :string
+      table.column :ip_address, :string
+      table.column :private_ip_address, :string
       table.column :chef_server, :boolean
     end
   end

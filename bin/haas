@@ -1,34 +1,44 @@
 #!/usr/bin/env ruby
-require 'cluster_launcher'
-require 'optparse'
+require 'rubygems'
+require 'haas'
+require 'mixlib/cli'
 
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: pige [option]"
-  opts.on('-k', '--keypair [NAME]', 'Create a new keypair.') { |v| options[:key_pair_name] = v }
+class MyCLI
+  include Mixlib::CLI
 
-  opts.on('-a', '--add [NAME]', 'Add a new name in the "pige".') { |v| options[:new_member_name] = v }
-  opts.on('-p', '--partner [NAME]', 'Optional with --add-name : add a partner to a member.') { |v| options[:new_partner_name] = v }
-  opts.on('-g', '--get-pige [NAME]', 'Get the pige for a given name.') { |v| options[:get_pige] = v }
-  opts.on('-r', '--run', 'Run the automated pige.') { |v| options[:run] = true }
-  opts.on('-s', '--server', 'Start the pige web server.') { |v| options[:start_server] = true }
-end.parse!
+  option :launch,
+    :short => "-l",
+    :long  => "--launch",
+    :description => "Launch the cluster"
 
-if options[:key_pair_name]
-  ClusterController.create_key_pair();
-#   PigeController.add_member options[:new_member_name], options[:new_partner_name]
-#   puts I18n.t('pige.welcome', name: options[:new_member_name])
-#   if options[:new_partner_name]
-#     puts I18n.t('pige.welcome_partner', name: options[:new_partner_name])
-#   end
-# elsif options[:get_pige]
-#   puts PigeController.get_pige options[:get_pige]
-# elsif options[:run]
-#   if PigeController.automated_pige
-#     puts I18n.t('pige.automated_pige_finished')
-#   else
-#     puts I18n.t('pige.automated_pige_error')
-#   end
-# elsif options[:start_server]
-#   PigeRack.start
+  option :list,
+    :short => "-s",
+    :long  => "--show",
+    :description => "Show all the running instances"
+
+  option :terminate,
+    :short => "-t",
+    :long  => "--terminate",
+    :description => "Terminate the cluster"
+
+  option :help,
+    :short => "-h",
+    :long => "--help",
+    :description => "Show this message",
+    :on => :tail,
+    :boolean => true,
+    :show_options => true,
+    :exit => 0
+
+end
+
+cli = MyCLI.new
+cli.parse_options
+
+if cli.config[:launch]
+  ClusterController.launch
+elsif cli.config[:list]
+  ClusterController.show
+elsif cli.config[:terminate]
+  ClusterController.terminate
 end
