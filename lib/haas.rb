@@ -4,6 +4,8 @@ require 'aws-sdk'
 require 'models/key_pair'
 require 'models/node'
 require 'controllers/cluster_controller'
+require 'controllers/aws_controller'
+require 'controllers/chef_controller'
 
 # remove warning for not providing locales
 I18n.enforce_available_locales = true
