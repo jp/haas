@@ -1,4 +1,3 @@
-require 'net/ssh'
 require 'active_record'
 require 'haas_config'
 require 'models/key_pair'
