@@ -1,4 +1,6 @@
 en:
   chef:
     downloading_chef_server: "Downloading chef server."
+  haas:
     not_enough_instances_available: "There is not enough instances available.\nYou can request a limit increase here : https://aws.amazon.com/support/createCase?serviceLimitIncreaseType=ec2-instances&type=service_limit_increase"
+    waiting_for_instances_to_start: "Waiting for the instances to start ..."

@@ -4,16 +4,9 @@ class ClusterController
     count = 2
     if AwsController.nb_instance_available >= count
       AwsController.create_key_pair
-      instances = AwsController.launch_instances('us-west-2',count,'m3.medium')
-      instances.each do |instance|
-        Node.create(
-          instance_id: instance.id,
-          ip_address: instance.ip_address,
-          private_ip_address: instance.private_ip_address
-        )
-      end
+      AwsController.launch_instances('us-west-2',count,'m3.medium')
     else
-      puts I18n.t('chef.not_enough_instances_available')
+      puts I18n.t('haas.not_enough_instances_available')
     end
   end
 

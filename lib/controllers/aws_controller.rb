@@ -17,8 +17,11 @@ class AwsController
     ec2 = AWS::EC2.new
     account_attribute = ec2.client.describe_account_attributes.data[:account_attribute_set].select {|a| a[:attribute_name]=="max-instances"}
     max_instances = account_attribute.first[:attribute_value_set].first[:attribute_value].to_i
-    running_instances = ec2.instances.inject({}) { |m, i| m[i.id] = i.status; m }.length
-    return max_instances - running_instances;
+    return max_instances - nb_running_instances
+  end
+
+  def self.nb_running_instances
+    ec2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : null; m }.length
   end
 
   def self.create_key_pair
@@ -50,6 +53,22 @@ class AwsController
       ],
       :count => count
     })
+
+    puts I18n.t('haas.waiting_for_instances_to_start')
+
+    while nb_running_instances < count do
+      print '.'
+      sleep 1
+    end
+
+    instances.each do |instance|
+      Node.create(
+        instance_id: instance.id,
+        ip_address: instance.ip_address,
+        private_ip_address: instance.private_ip_address
+      )
+    end
+
   end
 end
 
