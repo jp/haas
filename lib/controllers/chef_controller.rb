@@ -4,6 +4,8 @@ class ChefController
 # http://stackoverflow.com/questions/6833514/cannot-connect-using-keys-with-ruby-and-net-ssh
 
   def self.install_chef_server
+    require 'net/ssh'
+
     host = '192.168.20.12'
     user = 'vagrant'
     password= 'vagrant'

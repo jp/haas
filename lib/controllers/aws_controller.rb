@@ -1,5 +1,12 @@
-class AwsController
+require 'aws-sdk'
 
+class AwsController
+  AWS.config(
+    access_key_id: ENV['AWS_KEY'],
+    secret_access_key: ENV['AWS_SECRET'],
+    region: 'us-west-2'
+  )
+  EC2 = AWS::EC2.new
   IDENTITY_FILE = File.join(HaasConfig::WORKING_DIR,"/ssh-haas.pem")
   KEYPAIR_NAME = "haas-gem"
   CENTOS_7_IMAGES = {
@@ -14,15 +21,13 @@ class AwsController
   }
 
   def self.nb_instance_available
-    ec2 = AWS::EC2.new
-    account_attribute = ec2.client.describe_account_attributes.data[:account_attribute_set].select {|a| a[:attribute_name]=="max-instances"}
+    account_attribute = EC2.client.describe_account_attributes.data[:account_attribute_set].select {|a| a[:attribute_name]=="max-instances"}
     max_instances = account_attribute.first[:attribute_value_set].first[:attribute_value].to_i
     return max_instances - nb_running_instances
   end
 
   def self.nb_running_instances
-    ec2 = AWS::EC2.new
-    ec2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
+    EC2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
   end
 
   def self.create_key_pair
@@ -34,8 +39,7 @@ class AwsController
   def self.launch_instances(region, count, instance_type)
     image_id = CENTOS_7_IMAGES[region]
 
-    ec2 = AWS::EC2.new
-    instances = ec2.instances.create({
+    instances = EC2.instances.create({
       :image_id => image_id,
       :instance_type => instance_type,
       :key_name => KEYPAIR_NAME,
@@ -61,7 +65,7 @@ class AwsController
       $stdout.flush
       sleep 1
     end
-    print " done\n"
+    print I18n.t('haas.done')
 
     instances.each do |instance|
       Node.create(

@@ -1,6 +1,5 @@
 require 'net/ssh'
 require 'active_record'
-require 'aws-sdk'
 require 'haas_config'
 require 'models/key_pair'
 require 'models/node'
@@ -11,14 +10,6 @@ require 'controllers/chef_controller'
 # remove warning for not providing locales
 I18n.enforce_available_locales = true
 I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/*.{rb,yml}" )
-
-# Authenticate AWS
-
-AWS.config(
-  access_key_id: ENV['AWS_KEY'],
-  secret_access_key: ENV['AWS_SECRET'],
-  region: 'us-west-2'
-)
 
 # Create Haas folder
 
