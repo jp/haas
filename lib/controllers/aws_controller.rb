@@ -21,7 +21,8 @@ class AwsController
   end
 
   def self.nb_running_instances
-    ec2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : null; m }.length
+    ec2 = AWS::EC2.new
+    ec2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
   end
 
   def self.create_key_pair
@@ -34,7 +35,7 @@ class AwsController
     image_id = CENTOS_7_IMAGES[region]
 
     ec2 = AWS::EC2.new
-    ec2.instances.create({
+    instances = ec2.instances.create({
       :image_id => image_id,
       :instance_type => instance_type,
       :key_name => KEYPAIR_NAME,
@@ -54,12 +55,13 @@ class AwsController
       :count => count
     })
 
-    puts I18n.t('haas.waiting_for_instances_to_start')
-
+    print I18n.t('haas.waiting_for_instances_to_start')
     while nb_running_instances < count do
       print '.'
+      $stdout.flush
       sleep 1
     end
+    print " done\n"
 
     instances.each do |instance|
       Node.create(
