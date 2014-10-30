@@ -71,6 +71,26 @@ class ChefController
     kb.name_args = [host]
     kb.run
   end
+
+  def self.download_cookbook cookbook_name, url
+    require 'open-uri'
+    require 'archive/tar/minitar'
+
+    cookbooks_dir = File.join(HaasConfig::WORKING_DIR, 'cookbooks')
+    url = "https://supermarket.getchef.com/cookbooks/ambari/download"
+    cookbook_name = "ambari"
+
+    archive_path = File.join(cookbooks_dir, "#{cookbook_name}.tar")
+    unpack_dir   = File.join(cookbooks_dir, "#{cookbook_name}")
+
+    open("https://supermarket.getchef.com/cookbooks/ambari/download") {|f|
+       File.open(archive_path,"wb") do |file|
+         file.puts f.read
+       end
+    }
+
+    Archive::Tar::Minitar.unpack(archive_path, cookbooks_dir)
+  end
 end
 
 
