@@ -21,8 +21,13 @@ class AwsController
   }
 
   def self.nb_instance_available
-    account_attribute = EC2.client.describe_account_attributes.data[:account_attribute_set].select {|a| a[:attribute_name]=="max-instances"}
-    max_instances = account_attribute.first[:attribute_value_set].first[:attribute_value].to_i
+    account_attributes = EC2.client.describe_account_attributes\
+    .data[:account_attribute_set]\
+    .inject({}) do |m, i|
+      m[i[:attribute_name]] = i[:attribute_value_set].first[:attribute_value]; m
+    end
+
+    max_instances = account_attributes["max-instances"].to_i
     return max_instances - nb_running_instances
   end
 
