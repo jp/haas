@@ -70,8 +70,10 @@ class AwsController
     instances.each do |instance|
       Node.create(
         instance_id: instance.id,
-        ip_address: instance.ip_address,
-        private_ip_address: instance.private_ip_address
+        public_ip_address: instance.ip_address,
+        public_dns_name: instance.public_dns_name,
+        private_ip_address: instance.private_ip_address,
+        private_dns_name: instance.private_dns_name
       )
     end
 

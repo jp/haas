@@ -33,8 +33,10 @@ if !File.file?(SQLITE_DB)
 
     create_table :nodes do |table|
       table.column :instance_id, :string
-      table.column :ip_address, :string
+      table.column :public_ip_address, :string
+      table.column :public_dns_name, :string
       table.column :private_ip_address, :string
+      table.column :private_dns_name, :string
       table.column :chef_server, :boolean
     end
   end
