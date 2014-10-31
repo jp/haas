@@ -3,6 +3,9 @@ class ChefController
 # net ssh use identify file
 # http://stackoverflow.com/questions/6833514/cannot-connect-using-keys-with-ruby-and-net-ssh
 
+  CONFIG_FILE = File.join(HaasConfig::WORKING_DIR, 'knife.rb')
+  COOKBOOK_PATH = File.join(HaasConfig::WORKING_DIR, 'cookbooks')
+
   def self.install_chef_server
     require 'net/ssh'
 
@@ -14,7 +17,7 @@ class ChefController
     chef_server_local_path = "/tmp/#{chef_server_file}"
 
     Net::SSH.start(host, user, :password => password) do |ssh|
-      puts I18n.t('chef.downloading_chef_server')
+      puts I18n.t('chef.installing_chef_server')
       ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
       ssh.exec!("sudo rpm -ivh #{chef_server_local_path}")
       ssh.exec!("chef-server-ctl reconfigure")
@@ -32,13 +35,13 @@ class ChefController
       log_level                    :info
       log_location               STDOUT
       node_name               "haas-api"
-      client_key                  "#{Haas::WORKING_DIR}/haas-api.pem"
+      client_key                  "#{HaasConfig::WORKING_DIR}/haas-api.pem"
       validation_client_name   "haas-validator"
-      validation_key           "#{Haas::WORKING_DIR}/haas-validator.pem"
+      validation_key           "#{HaasConfig::WORKING_DIR}/haas-validator.pem"
       chef_server_url        "https://192.168.20.12/organizations/haas"
       cache_type               'BasicFile'
       cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
-      cookbook_path         ["#{Haas::WORKING_DIR}/cookbooks"]
+      cookbook_path         ["#{COOKBOOK_PATH}"]
       }
 
     File.write(File.join(Haas::WORKING_DIR,"knife.rb"), conf)
@@ -58,8 +61,7 @@ class ChefController
     require 'net/ssh'
     require 'net/ssh/multi'
 
-    config_file = File.join(Haas::WORKING_DIR, 'knife.rb')
-    Chef::Config.from_file(config_file)
+    Chef::Config.from_file(CONFIG_FILE)
     kb = Chef::Knife::Bootstrap.new
     kb.config[:ssh_user]       = user
     kb.config[:ssh_password]       = password
@@ -90,6 +92,24 @@ class ChefController
     Archive::Tar::Minitar.unpack(archive_path, cookbooks_dir)
   end
 
+  def self.upload_cookbook
+    require 'chef'
+    require 'chef/cookbook_version'
+    require 'chef/cookbook_uploader'
+
+    puts I18n.t('chef.uploading_cookbooks')
+
+    Chef::Config.from_file(CONFIG_FILE)
+    cookbook_repo = Chef::CookbookLoader.new(COOKBOOK_PATH)
+    cookbook_repo.load_cookbooks
+    cbs = []
+    cookbook_repo.each do |cookbook_name, cookbook|
+      cbs << cookbook
+      cookbook.freeze_version if config[:freeze]
+      version_constraints_to_update[cookbook_name] = cookbook.version
+    end
+    Chef::CookbookUploader.new(cbs,:force => false, :concurrency => 10).upload_cookbooks
+  end
 end
 
 
