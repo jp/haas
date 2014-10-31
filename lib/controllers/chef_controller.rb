@@ -94,7 +94,6 @@ class ChefController
 
   def self.upload_cookbook
     require 'chef'
-    require 'chef/cookbook_version'
     require 'chef/cookbook_uploader'
 
     puts I18n.t('chef.uploading_cookbooks')
