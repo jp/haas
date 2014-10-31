@@ -9,15 +9,27 @@ class AwsController
   EC2 = AWS::EC2.new
   IDENTITY_FILE = File.join(HaasConfig::WORKING_DIR,"/ssh-haas.pem")
   KEYPAIR_NAME = "haas-gem"
-  CENTOS_7_IMAGES = {
-    "us-east-1"=>"ami-96a818fe",
-    "us-west-2"=>"ami-c7d092f7",
-    "us-west-1"=>"ami-6bcfc42e",
-    "eu-west-1"=>"ami-e4ff5c93",
-    "ap-southeast-1"=>"ami-aea582fc",
-    "ap-southeast-2"=>"ami-bd523087",
-    "ap-northeast-1"=>"ami-89634988",
-    "sa-east-1"=>"ami-bf9520a2"
+  CENTOS_IMAGES = {
+    "6.5" => {
+      "us-east-1"=>"ami-8997afe0",
+      "us-west-2"=>"ami-b6bdde86",
+      "us-west-1"=>"ami-1a013c5f",
+      "eu-west-1"=>"ami-42718735",
+      "ap-southeast-1"=>"ami-a08fd9f2",
+      "ap-southeast-2"=>"ami-e7138ddd",
+      "ap-northeast-1"=>"ami-81294380",
+      "sa-east-1"=>"ami-7d02a260"
+    },
+    "7" => {
+      "us-east-1"=>"ami-96a818fe",
+      "us-west-2"=>"ami-c7d092f7",
+      "us-west-1"=>"ami-6bcfc42e",
+      "eu-west-1"=>"ami-e4ff5c93",
+      "ap-southeast-1"=>"ami-aea582fc",
+      "ap-southeast-2"=>"ami-bd523087",
+      "ap-northeast-1"=>"ami-89634988",
+      "sa-east-1"=>"ami-bf9520a2"
+    }
   }
 
   def self.nb_instance_available
@@ -42,7 +54,7 @@ class AwsController
   end
 
   def self.launch_instances(region, count, instance_type)
-    image_id = CENTOS_7_IMAGES[region]
+    image_id = CENTOS_IMAGES["6.5"][region]
 
     instances = EC2.instances.create({
       :image_id => image_id,
