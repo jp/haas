@@ -73,13 +73,11 @@ class ChefController
 
     Chef::Config.from_file(CONFIG_FILE)
     kb = Chef::Knife::Bootstrap.new
-#    kb.config[:environment] = "haas_test_env"
     kb.config[:ssh_user]       = user
     kb.config[:ssh_password]       = password
     kb.config[:run_list]       = ["recipe[ambari::server]","recipe[ambari::agent]"]
     kb.config[:use_sudo]       = true
-    kb.config[:chef_node_name] = name
-    kb.config[:identity_file] = File.join(Haas::WORKING_DIR,"vagrant")
+#    kb.config[:identity_file] = File.join(HaasConfig::WORKING_DIR,"vagrant")
     kb.config[:distro] = 'chef-full'
     kb.config[:environment] = environment
     kb.name_args = [host]
