@@ -116,8 +116,6 @@ class ChefController
     cbs = []
     cookbook_repo.each do |cookbook_name, cookbook|
       cbs << cookbook
-      cookbook.freeze_version if config[:freeze]
-      version_constraints_to_update[cookbook_name] = cookbook.version
     end
     Chef::CookbookUploader.new(cbs,:force => false, :concurrency => 10).upload_cookbooks
   end
