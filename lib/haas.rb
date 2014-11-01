@@ -2,6 +2,7 @@ require 'active_record'
 require 'haas_config'
 require 'models/key_pair'
 require 'models/node'
+require 'models/cluster'
 require 'controllers/cluster_controller'
 require 'controllers/aws_controller'
 require 'controllers/chef_controller'
@@ -31,6 +32,11 @@ if !File.file?(SQLITE_DB)
     end
     add_index :key_pairs, :name, unique: true
 
+    create_table :clusters do |table|
+      table.column :name, :string
+    end
+    add_index :clusters, :name, unique: true
+
     create_table :nodes do |table|
       table.column :instance_id, :string
       table.column :public_ip_address, :string
@@ -38,6 +44,7 @@ if !File.file?(SQLITE_DB)
       table.column :private_ip_address, :string
       table.column :private_dns_name, :string
       table.column :chef_server, :boolean
+      table.column :cluster_id, :integer
     end
   end
 end

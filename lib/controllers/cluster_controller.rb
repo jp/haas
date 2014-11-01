@@ -2,9 +2,10 @@ class ClusterController
 
   def self.launch
     count = 2
+    cluster=Cluster.create
     if AwsController.nb_instance_available >= count
       AwsController.create_key_pair
-      AwsController.launch_instances('us-west-2',count,'m3.medium')
+      AwsController.launch_instances(cluster, 'us-west-2',count,'m3.medium')
     else
       puts I18n.t('haas.not_enough_instances_available')
     end
