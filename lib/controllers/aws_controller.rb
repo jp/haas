@@ -53,7 +53,7 @@ class AwsController
     File.chmod(0600, IDENTITY_FILE)
   end
 
-  def self.launch_instances(region, count, instance_type)
+  def self.launch_instances(cluster, region, count, instance_type)
     image_id = CENTOS_IMAGES["6.5"][region]
 
     instances = EC2.instances.create({
@@ -86,6 +86,7 @@ class AwsController
 
     instances.each do |instance|
       Node.create(
+        cluster_id: cluster.id,
         instance_id: instance.id,
         public_ip_address: instance.ip_address,
         public_dns_name: instance.public_dns_name,

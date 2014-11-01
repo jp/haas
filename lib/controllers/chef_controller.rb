@@ -52,6 +52,7 @@ class ChefController
     host = '192.168.20.12'
     user = 'vagrant'
     password= 'vagrant'
+    environment = "haas_test_env" # cluster.name
 
     require 'chef'
     require 'chef/knife'
@@ -63,13 +64,15 @@ class ChefController
 
     Chef::Config.from_file(CONFIG_FILE)
     kb = Chef::Knife::Bootstrap.new
+#    kb.config[:environment] = "haas_test_env"
     kb.config[:ssh_user]       = user
     kb.config[:ssh_password]       = password
-#    kb.config[:run_list]       = options[:run_list]
+    kb.config[:run_list]       = ["recipe[ambari::server]","recipe[ambari::agent]"]
     kb.config[:use_sudo]       = true
     kb.config[:chef_node_name] = name
     kb.config[:identity_file] = File.join(Haas::WORKING_DIR,"vagrant")
     kb.config[:distro] = 'chef-full'
+    kb.config[:environment] = environment
     kb.name_args = [host]
     kb.run
   end
@@ -109,6 +112,29 @@ class ChefController
     end
     Chef::CookbookUploader.new(cbs,:force => false, :concurrency => 10).upload_cookbooks
   end
+
+  def self.setup_environment(name)
+    require 'chef/environment'
+    require 'chef/rest'
+
+    name="haas_test_env"
+    ambari_server_fqdn = '192.168.20.12'
+
+    override_attributes = {
+      :ambari => {
+        :server_fdqn => ambari_server_fqdn
+      }
+    }
+
+    Chef::Config.from_file(CONFIG_FILE)
+    environment = Chef::Environment.new
+    environment.name(name)
+    environment.description("haas hadoop cluster")
+    environment.override_attributes(override_attributes)
+    environment.save
+
+  end
+
 end
 
 
