@@ -6,6 +6,15 @@ class ChefController
   CONFIG_FILE = File.join(HaasConfig::WORKING_DIR, 'knife.rb')
   COOKBOOK_PATH = File.join(HaasConfig::WORKING_DIR, 'cookbooks')
 
+  def self.setup_cluster
+    install_chef_server
+    write_knife_config_file
+    download_cookbook
+    upload_cookbook
+    setup_environment
+    bootstrap_node
+  end
+
   def self.install_chef_server
     require 'net/ssh'
 
@@ -20,13 +29,13 @@ class ChefController
       puts I18n.t('chef.installing_chef_server')
       ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
       ssh.exec!("sudo rpm -ivh #{chef_server_local_path}")
-      ssh.exec!("chef-server-ctl reconfigure")
+      ssh.exec!("sudo chef-server-ctl reconfigure")
 
       client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
-      File.write(File.join(Haas::WORKING_DIR,"/haas-api.pem"), client_key)
+      File.write(File.join(HaasConfig::WORKING_DIR,"/haas-api.pem"), client_key)
 
       org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
-      File.write(File.join(Haas::WORKING_DIR,"/haas-validator.pem"), org_validator_key)
+      File.write(File.join(HaasConfig::WORKING_DIR,"/haas-validator.pem"), org_validator_key)
     end
   end
 
@@ -44,7 +53,7 @@ class ChefController
       cookbook_path         ["#{COOKBOOK_PATH}"]
       }
 
-    File.write(File.join(Haas::WORKING_DIR,"knife.rb"), conf)
+    File.write(File.join(HaasConfig::WORKING_DIR,"knife.rb"), conf)
   end
 
 
