@@ -26,9 +26,11 @@ class ChefController
     chef_server_local_path = "/tmp/#{chef_server_file}"
 
     Net::SSH.start(host, user, :password => password) do |ssh|
-      puts I18n.t('chef.installing_chef_server')
+      puts I18n.t('chef.downloading_chef_server')
       ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
+      puts I18n.t('chef.installing_chef_server')
       ssh.exec!("sudo rpm -ivh #{chef_server_local_path}")
+      puts I18n.t('chef.configuring_chef_server')
       ssh.exec!("sudo chef-server-ctl reconfigure")
 
       client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
@@ -51,7 +53,8 @@ class ChefController
       cache_type               'BasicFile'
       cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
       cookbook_path         ["#{COOKBOOK_PATH}"]
-      }
+      environment             "haas_test_env" # cluster.name
+    }
 
     File.write(File.join(HaasConfig::WORKING_DIR,"knife.rb"), conf)
   end
@@ -127,7 +130,7 @@ class ChefController
 
     override_attributes = {
       :ambari => {
-        :server_fdqn => ambari_server_fqdn
+        :server_fqdn => ambari_server_fqdn
       }
     }
 
