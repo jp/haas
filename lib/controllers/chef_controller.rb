@@ -64,7 +64,6 @@ class ChefController
     host = '192.168.20.12'
     user = 'vagrant'
     password= 'vagrant'
-    environment = "haas_test_env" # cluster.name
 
     require 'chef'
     require 'chef/knife'
@@ -82,7 +81,6 @@ class ChefController
     kb.config[:use_sudo]       = true
 #    kb.config[:identity_file] = File.join(Haas::Config::WORKING_DIR,"vagrant")
     kb.config[:distro] = 'chef-full'
-    kb.config[:environment] = environment
     kb.name_args = [host]
     kb.run
   end
