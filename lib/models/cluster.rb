@@ -1,7 +1,7 @@
 class Haas
   class Cluster < ActiveRecord::Base
     before_create :generate_name
-    has_many :nodes
+    has_many :nodes, dependent: :destroy
 
     def generate_name
       random_str = (0...8).map { (65 + rand(26)).chr }.join
