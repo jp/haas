@@ -1,5 +1,5 @@
 class Haas
-  class ChefController
+  class Chef
 
   # net ssh use identify file
   # http://stackoverflow.com/questions/6833514/cannot-connect-using-keys-with-ruby-and-net-ssh
