@@ -20,6 +20,7 @@ class Haas
     )
 
     if !File.file?(SQLITE_DB)
+      ActiveRecord::Migration.verbose = false
       ActiveRecord::Schema.define do
         create_table :key_pairs do |table|
           table.column :name, :string
