@@ -40,5 +40,5 @@ if cli.config[:launch]
 elsif cli.config[:list]
   Haas.show
 elsif cli.config[:terminate]
-  Haas.terminate
+  Haas.terminate Haas::Cluster.last
 end

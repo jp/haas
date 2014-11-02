@@ -16,12 +16,21 @@ class Haas
       Haas::Aws.launch_instances(cluster, 'us-west-2',count,'m3.medium')
     else
       puts I18n.t('haas.not_enough_instances_available')
+      exit
     end
   end
 
   def self.show
-    Haas::Node.all.each do |node|
-      puts "#{node.instance_id} - #{node.ip_address} - #{node.private_ip_address}"
+    Haas::Cluster.all.each do |cluster|
+      puts "Cluster - #{cluster.name}"
+      cluster.nodes.each do |node|
+        puts "        #{node.instance_id} - #{node.ip_address} - #{node.private_ip_address}"
+      end
     end
   end
+
+  def self.terminate cluster_name
+    Haas::Aws.terminate_cluster Cluster.first
+  end
+
 end

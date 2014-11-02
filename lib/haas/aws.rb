@@ -95,7 +95,13 @@ class Haas
           private_dns_name: instance.private_dns_name
         )
       end
+    end
 
+    def self.terminate_cluster cluster
+      EC2.client.terminate_instances({
+        instance_ids: cluster.nodes.map(&:instance_id)
+      })
+      cluster.destroy
     end
   end
 end
