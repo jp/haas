@@ -3,8 +3,8 @@ class ChefController
 # net ssh use identify file
 # http://stackoverflow.com/questions/6833514/cannot-connect-using-keys-with-ruby-and-net-ssh
 
-  CONFIG_FILE = File.join(HaasConfig::WORKING_DIR, 'knife.rb')
-  COOKBOOK_PATH = File.join(HaasConfig::WORKING_DIR, 'cookbooks')
+  CONFIG_FILE = File.join(Haas::Config::WORKING_DIR, 'knife.rb')
+  COOKBOOK_PATH = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
 
   def self.setup_cluster
     install_chef_server
@@ -34,10 +34,10 @@ class ChefController
       ssh.exec!("sudo chef-server-ctl reconfigure")
 
       client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
-      File.write(File.join(HaasConfig::WORKING_DIR,"/haas-api.pem"), client_key)
+      File.write(File.join(Haas::Config::WORKING_DIR,"/haas-api.pem"), client_key)
 
       org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
-      File.write(File.join(HaasConfig::WORKING_DIR,"/haas-validator.pem"), org_validator_key)
+      File.write(File.join(Haas::Config::WORKING_DIR,"/haas-validator.pem"), org_validator_key)
     end
   end
 
@@ -46,9 +46,9 @@ class ChefController
       log_level                    :info
       log_location               STDOUT
       node_name               "haas-api"
-      client_key                  "#{HaasConfig::WORKING_DIR}/haas-api.pem"
+      client_key                  "#{Haas::Config::WORKING_DIR}/haas-api.pem"
       validation_client_name   "haas-validator"
-      validation_key           "#{HaasConfig::WORKING_DIR}/haas-validator.pem"
+      validation_key           "#{Haas::Config::WORKING_DIR}/haas-validator.pem"
       chef_server_url        "https://192.168.20.12/organizations/haas"
       cache_type               'BasicFile'
       cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
@@ -56,7 +56,7 @@ class ChefController
       environment             "haas_test_env" # cluster.name
     }
 
-    File.write(File.join(HaasConfig::WORKING_DIR,"knife.rb"), conf)
+    File.write(File.join(Haas::Config::WORKING_DIR,"knife.rb"), conf)
   end
 
 
@@ -80,7 +80,7 @@ class ChefController
     kb.config[:ssh_password]       = password
     kb.config[:run_list]       = ["recipe[ambari::server]","recipe[ambari::agent]"]
     kb.config[:use_sudo]       = true
-#    kb.config[:identity_file] = File.join(HaasConfig::WORKING_DIR,"vagrant")
+#    kb.config[:identity_file] = File.join(Haas::Config::WORKING_DIR,"vagrant")
     kb.config[:distro] = 'chef-full'
     kb.config[:environment] = environment
     kb.name_args = [host]
@@ -94,7 +94,7 @@ class ChefController
     url = "https://supermarket.getchef.com/cookbooks/ambari/download"
     cookbook_name = "ambari"
 
-    cookbooks_dir = File.join(HaasConfig::WORKING_DIR, 'cookbooks')
+    cookbooks_dir = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
     archive_path = File.join(cookbooks_dir, "#{cookbook_name}.tar")
     unpack_dir   = File.join(cookbooks_dir, "#{cookbook_name}")
     open("https://supermarket.getchef.com/cookbooks/ambari/download") {|f|

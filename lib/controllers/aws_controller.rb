@@ -7,7 +7,7 @@ class AwsController
     region: 'us-west-2'
   )
   EC2 = AWS::EC2.new
-  IDENTITY_FILE = File.join(HaasConfig::WORKING_DIR,"/ssh-haas.pem")
+  IDENTITY_FILE = File.join(Haas::Config::WORKING_DIR,"/ssh-haas.pem")
   KEYPAIR_NAME = "haas-gem"
   CENTOS_IMAGES = {
     "6.5" => {

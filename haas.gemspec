@@ -7,13 +7,14 @@ Gem::Specification.new do |s|
   s.authors     = ["Julien Pellet"]
   s.email       = 'jp@julienpellet.com'
   s.files        << "lib/haas.rb"
-  s.files        << "lib/haas_config.rb"
+  s.files        << "lib/haas/config.rb"
   s.files        << "lib/models/key_pair.rb"
   s.files        << "lib/models/node.rb"
   s.files        << "lib/models/cluster.rb"
   s.files        << "lib/controllers/cluster_controller.rb"
   s.files        << "lib/controllers/aws_controller.rb"
   s.files        << "lib/controllers/chef_controller.rb"
+  s.files        << "lib/haas/blueprints.rb"
 #  s.files        << "lib/server/pige_rack.rb"
   s.files        << "lib/locales/launcher.yml"
   s.executables = ['haas']

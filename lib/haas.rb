@@ -1,5 +1,5 @@
 require 'active_record'
-require 'haas_config'
+require 'haas/config'
 require 'models/key_pair'
 require 'models/node'
 require 'models/cluster'
@@ -14,11 +14,11 @@ I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/*.{rb,yml}" )
 
 # Create Haas folder
 
-Dir.mkdir(HaasConfig::WORKING_DIR) unless File.exists?(HaasConfig::WORKING_DIR)
+Dir.mkdir(Haas::Config::WORKING_DIR) unless File.exists?(Haas::Config::WORKING_DIR)
 
 ############ create sqlite db in memory ############
 
-SQLITE_DB = ENV['SQLITE_DB'] || File.join(HaasConfig::WORKING_DIR,"haas_sqlite3.db")
+SQLITE_DB = ENV['SQLITE_DB'] || File.join(Haas::Config::WORKING_DIR,"haas_sqlite3.db")
 
 ActiveRecord::Base.establish_connection(
   adapter: "sqlite3",
