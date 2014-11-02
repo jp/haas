@@ -4,7 +4,7 @@ require 'models/key_pair'
 require 'models/node'
 require 'models/cluster'
 require 'controllers/cluster_controller'
-require 'controllers/aws_controller'
+require 'haas/aws'
 require 'controllers/chef_controller'
 require 'haas/blueprints'
 
