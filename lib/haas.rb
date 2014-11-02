@@ -6,6 +6,7 @@ require 'models/cluster'
 require 'controllers/cluster_controller'
 require 'controllers/aws_controller'
 require 'controllers/chef_controller'
+require 'haas/blueprints'
 
 # remove warning for not providing locales
 I18n.enforce_available_locales = true
