@@ -72,31 +72,31 @@ class Haas
 
 
     def self.get_cluster(cluster)
-       {
-         "blueprint" => "multi-node-hdfs-yarn",
-         "default_password" => "my-super-secret-password",
-            "host_groups" => [
-           {
-              "name" => "master",
-             "hosts" => [
-               {
-                 "fqdn" => "c6401.ambari.apache.org"
-               }
-             ]
-           },
-           {
-              "name" => "slaves",
-             "hosts" => [
-               {
-                 "fqdn" => "c6402.ambari.apache.org"
-               },
-               {
-                 "fqdn" => "c6403.ambari.apache.org"
-               }
-             ]
-           }
-         ]
-       }
+      {
+        "blueprint" => "multi-node-hdfs-yarn",
+        "default_password" => "my-super-secret-password",
+        "host_groups" => [
+          {
+            "name" => "master",
+            "hosts" => [
+              {
+                "fqdn" => "c6401.ambari.apache.org"
+              }
+            ]
+          },
+          {
+            "name" => "slaves",
+            "hosts" => [
+              {
+                "fqdn" => "c6402.ambari.apache.org"
+              },
+              {
+                "fqdn" => "c6403.ambari.apache.org"
+              }
+            ]
+          }
+        ]
+      }
     end
 
   end
