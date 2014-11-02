@@ -36,9 +36,9 @@ cli = MyCLI.new
 cli.parse_options
 
 if cli.config[:launch]
-  ClusterController.launch
+  Haas.launch
 elsif cli.config[:list]
-  ClusterController.show
+  Haas.show
 elsif cli.config[:terminate]
-  ClusterController.terminate
+  Haas.terminate
 end

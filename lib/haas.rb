@@ -3,49 +3,25 @@ require 'haas/config'
 require 'models/key_pair'
 require 'models/node'
 require 'models/cluster'
-require 'controllers/cluster_controller'
 require 'haas/aws'
-require 'controllers/chef_controller'
+require 'haas/chef'
 require 'haas/blueprints'
 
-# remove warning for not providing locales
-I18n.enforce_available_locales = true
-I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/*.{rb,yml}" )
-
-# Create Haas folder
-
-Dir.mkdir(Haas::Config::WORKING_DIR) unless File.exists?(Haas::Config::WORKING_DIR)
-
-############ create sqlite db in memory ############
-
-SQLITE_DB = ENV['SQLITE_DB'] || File.join(Haas::Config::WORKING_DIR,"haas_sqlite3.db")
-
-ActiveRecord::Base.establish_connection(
-  adapter: "sqlite3",
-  database: SQLITE_DB
-)
-
-if !File.file?(SQLITE_DB)
-  ActiveRecord::Schema.define do
-    create_table :key_pairs do |table|
-      table.column :name, :string
-      table.column :private_key, :string
+class Haas
+  def self.launch
+    count = 2
+    cluster=Haas::Cluster.create
+    if Haas::Aws.nb_instance_available >= count
+      Haas::Aws.create_key_pair
+      Haas::Aws.launch_instances(cluster, 'us-west-2',count,'m3.medium')
+    else
+      puts I18n.t('haas.not_enough_instances_available')
     end
-    add_index :key_pairs, :name, unique: true
+  end
 
-    create_table :clusters do |table|
-      table.column :name, :string
-    end
-    add_index :clusters, :name, unique: true
-
-    create_table :nodes do |table|
-      table.column :instance_id, :string
-      table.column :public_ip_address, :string
-      table.column :public_dns_name, :string
-      table.column :private_ip_address, :string
-      table.column :private_dns_name, :string
-      table.column :chef_server, :boolean
-      table.column :cluster_id, :integer
+  def self.show
+    Haas::Node.all.each do |node|
+      puts "#{node.instance_id} - #{node.ip_address} - #{node.private_ip_address}"
     end
   end
 end

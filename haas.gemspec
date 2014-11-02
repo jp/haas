@@ -11,9 +11,8 @@ Gem::Specification.new do |s|
   s.files        << "lib/models/key_pair.rb"
   s.files        << "lib/models/node.rb"
   s.files        << "lib/models/cluster.rb"
-  s.files        << "lib/controllers/cluster_controller.rb"
   s.files        << "lib/haas/aws.rb"
-  s.files        << "lib/controllers/chef_controller.rb"
+  s.files        << "lib/haas/chef.rb"
   s.files        << "lib/haas/blueprints.rb"
   s.files        << "lib/locales/launcher.yml"
   s.executables = ['haas']
