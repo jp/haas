@@ -2,7 +2,7 @@ class ClusterController
 
   def self.launch
     count = 2
-    cluster=Cluster.create
+    cluster=Haas::Cluster.create
     if AwsController.nb_instance_available >= count
       AwsController.create_key_pair
       AwsController.launch_instances(cluster, 'us-west-2',count,'m3.medium')
@@ -12,7 +12,7 @@ class ClusterController
   end
 
   def self.show
-    Node.all.each do |node|
+    Haas::Node.all.each do |node|
       puts "#{node.instance_id} - #{node.ip_address} - #{node.private_ip_address}"
     end
   end

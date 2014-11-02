@@ -48,7 +48,7 @@ class AwsController
   end
 
   def self.create_key_pair
-    key_pair = KeyPair.create(name: KEYPAIR_NAME)
+    key_pair = Haas::KeyPair.create(name: KEYPAIR_NAME)
     File.write(IDENTITY_FILE, key_pair.private_key)
     File.chmod(0600, IDENTITY_FILE)
   end
@@ -85,7 +85,7 @@ class AwsController
     print I18n.t('haas.done')
 
     instances.each do |instance|
-      Node.create(
+      Haas::Node.create(
         cluster_id: cluster.id,
         instance_id: instance.id,
         public_ip_address: instance.ip_address,
