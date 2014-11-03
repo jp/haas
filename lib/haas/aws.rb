@@ -60,6 +60,7 @@ class Haas
       if !EC2.security_groups.filter('group-name', 'haas').first
         security_group = EC2.security_groups.create('haas')
         security_group.authorize_ingress(:tcp, 80)
+        security_group.authorize_ingress(:tcp, 443)
         security_group.authorize_ingress(:tcp, 8080)
         security_group.authorize_ingress(:tcp, 0..65535, security_group)
         security_group.authorize_ingress(:udp, 0..65535, security_group)
