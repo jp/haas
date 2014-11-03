@@ -40,6 +40,7 @@ class Haas
           table.column :private_ip_address, :string
           table.column :private_dns_name, :string
           table.column :chef_server, :boolean
+          table.column :ambari_server, :boolean
           table.column :cluster_id, :integer
         end
       end
