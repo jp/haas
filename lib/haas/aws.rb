@@ -70,6 +70,7 @@ class Haas
         :image_id => image_id,
         :instance_type => instance_type,
         :key_name => KEYPAIR_NAME,
+        :security_groups => [security_group],
         :block_device_mappings => [
           {
             :device_name => "/dev/sda1",
