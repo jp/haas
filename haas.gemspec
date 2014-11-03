@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files        << "lib/locales/launcher.yml"
   s.executables = ['haas']
   s.homepage    = 'http://github.com/jp/haas'
-  s.license       = 'MIT'
+  s.license       = 'Apache 2.0'
 
   s.add_dependency "activerecord", "~> 4.1"
   s.add_dependency "sqlite3", "~> 1.3"
