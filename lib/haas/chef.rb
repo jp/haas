@@ -7,7 +7,8 @@ class Haas
     CONFIG_FILE = File.join(Haas::Config::WORKING_DIR, 'knife.rb')
     COOKBOOK_PATH = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
 
-    def self.setup_cluster
+    def self.setup_cluster cluster
+      @cluster = cluster
       install_chef_server
       write_knife_config_file
       download_cookbook

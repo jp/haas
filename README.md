@@ -3,6 +3,10 @@
 # TODO
 
 Provide cost estimates with awscosts - https://github.com/srbartlett/awscosts
+Security groups:
+- access chef server on port 443
+- access ambari on 8080
+
 
 Contributing
 ------------
