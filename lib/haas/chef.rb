@@ -53,11 +53,11 @@ class Haas
         client_key                  "#{Haas::Config::WORKING_DIR}/haas-api.pem"
         validation_client_name   "haas-validator"
         validation_key           "#{Haas::Config::WORKING_DIR}/haas-validator.pem"
-        chef_server_url        "https://192.168.20.12/organizations/haas"
+        chef_server_url        "https://#{@cluster.get_chef_server.public_dns_name}/organizations/haas"
         cache_type               'BasicFile'
         cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
         cookbook_path         ["#{COOKBOOK_PATH}"]
-        environment             "haas_test_env" # cluster.name
+        environment             "#{@cluster.name}"
       }
 
       File.write(File.join(Haas::Config::WORKING_DIR,"knife.rb"), conf)
@@ -126,9 +126,7 @@ class Haas
     def self.setup_environment(name)
       require 'chef/environment'
       require 'chef/rest'
-
-      name="haas_test_env"
-      ambari_server_fqdn = '192.168.20.12'
+      ambari_server_fqdn = @cluster.get_ambari_server
 
       override_attributes = {
         :ambari => {
@@ -138,12 +136,10 @@ class Haas
 
       Chef::Config.from_file(CONFIG_FILE)
       environment = Chef::Environment.new
-      environment.name(name)
+      environment.name(cluster.name)
       environment.description("haas hadoop cluster")
       environment.override_attributes(override_attributes)
       environment.save
-
     end
-
   end
 end
