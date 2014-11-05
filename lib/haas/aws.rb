@@ -79,17 +79,16 @@ class Haas
             }
           },
           {
-          :device_name => "/dev/sdf",
-          :virtual_name => "ephemeral0"
+            :device_name => "/dev/sdf",
+            :virtual_name => "ephemeral0"
           }
         ],
         :count => count
       })
 
       print I18n.t('haas.waiting_for_instances_to_start')
-      while nb_running_instances < count do
+      while instances.any? {|i| i.status == :pending; } do
         print '.'
-        $stdout.flush
         sleep 1
       end
       print I18n.t('haas.done')
