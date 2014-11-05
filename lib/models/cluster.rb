@@ -1,7 +1,33 @@
 class Haas
   class Cluster < ActiveRecord::Base
     before_create :generate_name
+    after_create :mkdir_cluster_home
     has_many :nodes, dependent: :destroy
+
+    def mkdir_cluster_home
+      require 'fileutils'
+      FileUtils.mkdir_p
+    end
+
+    def working_dir_path
+      File.join(Haas::Config::WORKING_DIR, self.name)
+    end
+
+    def identity_file_path
+      File.join(self.working_dir_path,"ssh-#{self.name}.pem")
+    end
+
+    def chef_client_pem_path
+      File.join(self.working_dir_path,"haas-api.pem")
+    end
+
+    def chef_validator_pem_path
+      File.join(self.working_dir_path,"haas-validator.pem")
+    end
+
+    def knife_config_path
+      File.join(self.working_dir_path,"knife.rb")
+    end
 
     def generate_name
       random_str = (0...8).map { (65 + rand(26)).chr }.join

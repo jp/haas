@@ -8,8 +8,6 @@ class Haas
       region: 'us-west-2'
     )
     EC2 = AWS::EC2.new
-    IDENTITY_FILE = File.join(Haas::Config::WORKING_DIR,"/ssh-haas.pem")
-    KEYPAIR_NAME = "haas-gem"
     CENTOS_IMAGES = {
       "6.5" => {
         "us-east-1"=>"ami-8997afe0",
@@ -48,10 +46,10 @@ class Haas
       EC2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
     end
 
-    def self.create_key_pair
-      key_pair = Haas::KeyPair.create(name: KEYPAIR_NAME)
-      File.write(IDENTITY_FILE, key_pair.private_key)
-      File.chmod(0600, IDENTITY_FILE)
+    def self.create_key_pair cluster
+      key_pair = Haas::KeyPair.create(name: cluster.name)
+      File.write(cluster.identity_file_path, key_pair.private_key)
+      File.chmod(0600, cluster.identity_file_path)
     end
 
     def self.launch_instances(cluster, region, count, instance_type)
@@ -70,7 +68,7 @@ class Haas
       instances = EC2.instances.create({
         :image_id => image_id,
         :instance_type => instance_type,
-        :key_name => KEYPAIR_NAME,
+        :key_name => cluster.name,
         :security_groups => [security_group],
         :block_device_mappings => [
           {

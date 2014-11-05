@@ -27,7 +27,7 @@ class Haas
         chef_server.public_dns_name, user,
         :host_key => "ssh-rsa",
         :encryption => "blowfish-cbc",
-        :keys => [ "~/.haas/haas-api.pem" ],
+        :keys => [ cluster.identity_file_path ],
         :compression => "zlib"
       ) do |ssh|
         puts I18n.t('chef.downloading_chef_server')
@@ -38,10 +38,10 @@ class Haas
         ssh.exec!("sudo chef-server-ctl reconfigure")
 
         client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
-        File.write(File.join(Haas::Config::WORKING_DIR,"/haas-api.pem"), client_key)
+        File.write(cluster.chef_client_pem_path, client_key)
 
         org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
-        File.write(File.join(Haas::Config::WORKING_DIR,"/haas-validator.pem"), org_validator_key)
+        File.write(cluster.chef_validator_pem_path, org_validator_key)
       end
     end
 
@@ -50,9 +50,9 @@ class Haas
         log_level                    :info
         log_location               STDOUT
         node_name               "haas-api"
-        client_key                  "#{Haas::Config::WORKING_DIR}/haas-api.pem"
+        client_key                  "#{@cluster.chef_client_pem_path}"
         validation_client_name   "haas-validator"
-        validation_key           "#{Haas::Config::WORKING_DIR}/haas-validator.pem"
+        validation_key           "#{@cluster.chef_client_pem_path}"
         chef_server_url        "https://#{@cluster.get_chef_server.public_dns_name}/organizations/haas"
         cache_type               'BasicFile'
         cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
@@ -60,7 +60,7 @@ class Haas
         environment             "#{@cluster.name}"
       }
 
-      File.write(File.join(Haas::Config::WORKING_DIR,"knife.rb"), conf)
+      File.write(@cluster.knife_config_path, conf)
     end
 
 
