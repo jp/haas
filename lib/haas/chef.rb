@@ -11,13 +11,16 @@ class Haas
       download_cookbook
       upload_cookbook
       setup_environment
-      bootstrap_node
+      threads = []
+      cluster.nodes.each do |node|
+        threads << Thread.new { bootstrap_node(node) }
+      end
+      threads.each { |thr| thr.join }
     end
 
     def self.install_chef_server
       require 'net/ssh'
       chef_server = @cluster.get_chef_server
-      host = chef_server.public_dns_name
       user = 'centos'
       chef_server_file = "chef-server-core-12.0.0_rc.5-1.el5.x86_64.rpm"
       chef_server_url = "https://packagecloud.io/chef/stable/download?distro=6&filename=#{chef_server_file}"
@@ -64,11 +67,7 @@ class Haas
     end
 
 
-    def self.bootstrap_node
-      host = '192.168.20.12'
-      user = 'vagrant'
-      password= 'vagrant'
-
+    def self.bootstrap_node node
       require 'chef'
       require 'chef/knife'
       require 'chef/knife/bootstrap'
@@ -77,15 +76,18 @@ class Haas
       require 'net/ssh'
       require 'net/ssh/multi'
 
+      user = 'centos'
+      run_list = ["recipe[ambari::agent]"]
+      run_list << "recipe[ambari::server]" if node.ambari_server
+
       Chef::Config.from_file(CONFIG_FILE)
       kb = Chef::Knife::Bootstrap.new
-      kb.config[:ssh_user]       = user
-      kb.config[:ssh_password]       = password
-      kb.config[:run_list]       = ["recipe[ambari::server]","recipe[ambari::agent]"]
-      kb.config[:use_sudo]       = true
-  #    kb.config[:identity_file] = File.join(Haas::Config::WORKING_DIR,"vagrant")
+      kb.config[:ssh_user] = user
+      kb.config[:run_list] = run_list
+      kb.config[:use_sudo] = true
+      kb.config[:identity_file] = @cluster.identity_file_path
       kb.config[:distro] = 'chef-full'
-      kb.name_args = [host]
+      kb.name_args = [node.public_dns_name]
       kb.run
     end
 
