@@ -15,7 +15,7 @@ class Haas
 
     cluster=Haas::Cluster.create
     if Haas::Aws.nb_instance_available >= count
-      Haas::Aws.create_key_pair
+      Haas::Aws.create_key_pair cluster
       Haas::Aws.launch_instances(cluster, region, count, instance_type)
     else
       puts I18n.t('haas.not_enough_instances_available')
