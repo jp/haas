@@ -52,11 +52,6 @@ class Haas
       File.chmod(0600, cluster.identity_file_path)
     end
 
-    def self.instance_initializing(instances)
-      instance_statuses = EC2.client.describe_instance_status({instance_ids:instances.map{|i| i.id}})
-      instance_statuses[:instance_status_set].any? {|a| a[:instance_status][:status] == 'initializing'}
-    end
-
     def self.launch_instances(cluster, region, count, instance_type)
       image_id = CENTOS_IMAGES["6.5"][region]
 
@@ -97,14 +92,14 @@ class Haas
         print '.'
         sleep 1
       end
-      print " done"
+      puts " done"
 
       print "Waiting for the instances to be initialized and accessible ..."
-      while instance_initializing(instances) do
+      while !is_cluster_ssh_open?(instances) do
         print '.'
         sleep 1
       end
-      print " done"
+      puts " done"
 
       instances.each do |instance|
         Haas::Node.create(
@@ -124,5 +119,31 @@ class Haas
       })
       cluster.destroy
     end
+
+    def self.is_cluster_ssh_open?(instances)
+      instances.each do |instance|
+        return false unless is_port_open?(instance.public_dns_name,22)
+      end
+      return true
+    end
+
+    def self.is_port_open?(ip, port)
+      require 'socket'
+      require 'timeout'
+      begin
+        Timeout::timeout(1) do
+          begin
+            s = TCPSocket.new(ip, port)
+            s.close
+            return true
+          rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+            return false
+          end
+        end
+      rescue Timeout::Error
+      end
+      return false
+    end
+
   end
 end
