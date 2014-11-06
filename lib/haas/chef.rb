@@ -37,14 +37,14 @@ class Haas
         puts I18n.t('chef.downloading_chef_server')
         ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
         puts I18n.t('chef.installing_chef_server')
-        ssh.exec!("sudo rpm -ivh #{chef_server_local_path}")
+        ssh.exec!("rpm -ivh #{chef_server_local_path}")
         puts I18n.t('chef.configuring_chef_server')
-        ssh.exec!("sudo chef-server-ctl reconfigure")
+        ssh.exec!("chef-server-ctl reconfigure")
 
-        client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
+        client_key = ssh.exec!("chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
         File.write(Haas.cluster.chef_client_pem_path, client_key)
 
-        org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
+        org_validator_key = ssh.exec!("chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
         File.write(Haas.cluster.chef_validator_pem_path, org_validator_key)
       end
     end
