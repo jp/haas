@@ -1,7 +1,6 @@
 class Haas
   class Chef
 
-    CONFIG_FILE = File.join(Haas::Config::WORKING_DIR, 'knife.rb')
     COOKBOOK_PATH = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
 
     def self.setup_cluster
@@ -82,7 +81,7 @@ class Haas
       run_list = ["recipe[ambari::agent]"]
       run_list << "recipe[ambari::server]" if node.ambari_server
 
-      Chef::Config.from_file(CONFIG_FILE)
+      Chef::Config.from_file(Haas.cluster.knife_config_path)
       kb = Chef::Knife::Bootstrap.new
       kb.config[:ssh_user] = user
       kb.config[:run_list] = run_list
@@ -115,7 +114,7 @@ class Haas
 
       puts I18n.t('chef.uploading_cookbooks')
 
-      Chef::Config.from_file(CONFIG_FILE)
+      Chef::Config.from_file(Haas.cluster.knife_config_path)
       cookbook_repo = Chef::CookbookLoader.new(COOKBOOK_PATH)
       cookbook_repo.load_cookbooks
       cbs = []
@@ -136,7 +135,7 @@ class Haas
         }
       }
 
-      Chef::Config.from_file(CONFIG_FILE)
+      Chef::Config.from_file(Haas.cluster.knife_config_path)
       environment = Chef::Environment.new
       environment.name(Haas.cluster.name)
       environment.description("haas hadoop cluster")
