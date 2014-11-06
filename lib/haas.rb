@@ -13,10 +13,10 @@ class Haas
     region = 'us-west-2'
     instance_type = 'm3.medium'
 
-    cluster=Haas::Cluster.create
+    @cluster=Haas::Cluster.create
     if Haas::Aws.nb_instance_available >= count
-      Haas::Aws.create_key_pair cluster
-      Haas::Aws.launch_instances(cluster, region, count, instance_type)
+      Haas::Aws.create_key_pair @cluster
+      Haas::Aws.launch_instances(@cluster, region, count, instance_type)
     else
       puts I18n.t('haas.not_enough_instances_available')
       exit
@@ -37,6 +37,10 @@ class Haas
 
   def self.terminate cluster_name
     Haas::Aws.terminate_cluster Cluster.first
+  end
+
+  def cluster
+    return @cluster
   end
 
 end

@@ -72,28 +72,28 @@ class Haas
 
 
     def self.get_cluster(cluster)
+      masters = []
+      slaves = []
+      nb_masters = 1
+      Haas.cluster.nodes.each do |node|
+        if masters.length < nb_masters
+          masters << { "fqdn" => node.private_dns_name }
+        else
+          slaves << { "fqdn" => node.private_dns_name }
+        end
+      end
+
       {
         "blueprint" => "multi-node-hdfs-yarn",
         "default_password" => "my-super-secret-password",
         "host_groups" => [
           {
             "name" => "master",
-            "hosts" => [
-              {
-                "fqdn" => "c6401.ambari.apache.org"
-              }
-            ]
+            "hosts" => masters
           },
           {
             "name" => "slaves",
-            "hosts" => [
-              {
-                "fqdn" => "c6402.ambari.apache.org"
-              },
-              {
-                "fqdn" => "c6403.ambari.apache.org"
-              }
-            ]
+            "hosts" => slaves
           }
         ]
       }
