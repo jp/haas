@@ -42,6 +42,7 @@ class Haas
         node = self.nodes.first
         node.chef_server = true
         node.save
+        return node
       end
     end
 
@@ -53,6 +54,7 @@ class Haas
         node = self.nodes.where('nodes.chef_server=?',false).first
         node.ambari_server = true
         node.save
+        return node
       end
     end
   end
