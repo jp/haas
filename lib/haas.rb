@@ -22,7 +22,7 @@ class Haas
       exit
     end
 
-    Haas::Chef.setup_cluster(cluster)
+    Haas::Chef.setup_cluster(@cluster)
 
   end
 
