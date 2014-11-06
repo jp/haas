@@ -4,15 +4,14 @@ class Haas
     CONFIG_FILE = File.join(Haas::Config::WORKING_DIR, 'knife.rb')
     COOKBOOK_PATH = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
 
-    def self.setup_cluster cluster
-      @cluster = cluster
+    def self.setup_cluster
       install_chef_server
       write_knife_config_file
       download_cookbook
       upload_cookbook
       setup_environment
       threads = []
-      cluster.nodes.each do |node|
+      Haas.cluster.nodes.each do |node|
         threads << Thread.new { bootstrap_node(node) }
       end
       threads.each { |thr| thr.join }
@@ -20,7 +19,7 @@ class Haas
 
     def self.install_chef_server
       require 'net/ssh'
-      chef_server = @cluster.get_chef_server
+      chef_server = Haas.cluster.get_chef_server
       user = 'centos'
       chef_server_file = "chef-server-core-12.0.0_rc.5-1.el5.x86_64.rpm"
       chef_server_url = "https://packagecloud.io/chef/stable/download?distro=6&filename=#{chef_server_file}"
@@ -30,7 +29,7 @@ class Haas
         chef_server.public_dns_name, user,
         :host_key => "ssh-rsa",
         :encryption => "blowfish-cbc",
-        :keys => [ cluster.identity_file_path ],
+        :keys => [ Haas.cluster.identity_file_path ],
         :compression => "zlib"
       ) do |ssh|
         puts I18n.t('chef.downloading_chef_server')
@@ -41,10 +40,10 @@ class Haas
         ssh.exec!("sudo chef-server-ctl reconfigure")
 
         client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
-        File.write(cluster.chef_client_pem_path, client_key)
+        File.write(Haas.cluster.chef_client_pem_path, client_key)
 
         org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
-        File.write(cluster.chef_validator_pem_path, org_validator_key)
+        File.write(Haas.cluster.chef_validator_pem_path, org_validator_key)
       end
     end
 
@@ -53,17 +52,17 @@ class Haas
         log_level                    :info
         log_location               STDOUT
         node_name               "haas-api"
-        client_key                  "#{@cluster.chef_client_pem_path}"
+        client_key                  "#{Haas.cluster.chef_client_pem_path}"
         validation_client_name   "haas-validator"
-        validation_key           "#{@cluster.chef_client_pem_path}"
-        chef_server_url        "https://#{@cluster.get_chef_server.public_dns_name}/organizations/haas"
+        validation_key           "#{Haas.cluster.chef_client_pem_path}"
+        chef_server_url        "https://#{Haas.cluster.get_chef_server.public_dns_name}/organizations/haas"
         cache_type               'BasicFile'
         cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
         cookbook_path         ["#{COOKBOOK_PATH}"]
-        environment             "#{@cluster.name}"
+        environment             "#{Haas.cluster.name}"
       }
 
-      File.write(@cluster.knife_config_path, conf)
+      File.write(Haas.cluster.knife_config_path, conf)
     end
 
 
@@ -85,7 +84,7 @@ class Haas
       kb.config[:ssh_user] = user
       kb.config[:run_list] = run_list
       kb.config[:use_sudo] = true
-      kb.config[:identity_file] = @cluster.identity_file_path
+      kb.config[:identity_file] = Haas.cluster.identity_file_path
       kb.config[:distro] = 'chef-full'
       kb.name_args = [node.public_dns_name]
       kb.run
@@ -128,7 +127,7 @@ class Haas
     def self.setup_environment(name)
       require 'chef/environment'
       require 'chef/rest'
-      ambari_server_fqdn = @cluster.get_ambari_server
+      ambari_server_fqdn = Haas.cluster.get_ambari_server
 
       override_attributes = {
         :ambari => {
@@ -138,7 +137,7 @@ class Haas
 
       Chef::Config.from_file(CONFIG_FILE)
       environment = Chef::Environment.new
-      environment.name(cluster.name)
+      environment.name(Haas.cluster.name)
       environment.description("haas hadoop cluster")
       environment.override_attributes(override_attributes)
       environment.save

@@ -22,8 +22,7 @@ class Haas
       exit
     end
 
-    Haas::Chef.setup_cluster(@cluster)
-
+    Haas::Chef.setup_cluster
   end
 
   def self.show
@@ -39,7 +38,7 @@ class Haas
     Haas::Aws.terminate_cluster Cluster.first
   end
 
-  def cluster
+  def self.cluster
     return @cluster
   end
 
