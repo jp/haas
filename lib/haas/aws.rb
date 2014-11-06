@@ -52,6 +52,11 @@ class Haas
       File.chmod(0600, cluster.identity_file_path)
     end
 
+    def self.instance_initializing(instances)
+      instance_statuses = EC2.client.describe_instance_status({instance_ids:instances.map{|i| i.id}})
+      instance_statuses[:instance_status_set].any? {|a| a[:instance_status][:status] == 'initializing'}
+    end
+
     def self.launch_instances(cluster, region, count, instance_type)
       image_id = CENTOS_IMAGES["6.5"][region]
 
@@ -87,12 +92,19 @@ class Haas
         :count => count
       })
 
-      print I18n.t('haas.waiting_for_instances_to_start')
+      print "Waiting for the instances to start ..."
       while instances.any? {|i| i.status == :pending; } do
         print '.'
         sleep 1
       end
-      print I18n.t('haas.done')
+      print " done"
+
+      print "Waiting for the instances to be initialized and accessible ..."
+      while instance_initializing(instances) do
+        print '.'
+        sleep 1
+      end
+      print " done"
 
       instances.each do |instance|
         Haas::Node.create(
