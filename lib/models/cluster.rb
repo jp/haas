@@ -6,7 +6,7 @@ class Haas
 
     def mkdir_cluster_home
       require 'fileutils'
-      FileUtils.mkdir_p
+      FileUtils.mkdir_p self.working_dir_path
     end
 
     def working_dir_path
