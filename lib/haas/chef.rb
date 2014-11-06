@@ -98,6 +98,7 @@ class Haas
       require 'archive/tar/minitar'
 
       cookbooks_dir = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
+      Dir.mkdir(cookbooks_dir) unless File.exists?(cookbooks_dir)
       archive_path = File.join(cookbooks_dir, "#{cookbook_name}.tar")
       unpack_dir   = File.join(cookbooks_dir, "#{cookbook_name}")
       open("https://supermarket.getchef.com/cookbooks/ambari/download") {|f|
