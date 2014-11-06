@@ -55,8 +55,8 @@ class Haas
     def self.launch_instances(cluster, region, count, instance_type)
       image_id = CENTOS_IMAGES["6.5"][region]
 
-      if !EC2.security_groups.filter('group-name', 'haas').first
-        security_group = EC2.security_groups.create('haas')
+      if !EC2.security_groups.filter('group-name', 'haas-security-group').first
+        security_group = EC2.security_groups.create('haas-security-group')
         security_group.authorize_ingress(:tcp, 80)
         security_group.authorize_ingress(:tcp, 443)
         security_group.authorize_ingress(:tcp, 8080)
@@ -69,7 +69,7 @@ class Haas
         :image_id => image_id,
         :instance_type => instance_type,
         :key_name => cluster.name,
-        :security_groups => [security_group],
+        :security_groups => ['haas-security-group'],
         :block_device_mappings => [
           {
             :device_name => "/dev/sda1",
