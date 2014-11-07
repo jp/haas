@@ -43,9 +43,10 @@ class Haas
         puts I18n.t('chef.configuring_chef_server')
         ssh.exec!("chef-server-ctl reconfigure")
 
-        sleep 10
-
-        client_key = ssh.exec!("chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
+        client_key = ""
+        while !client_key.include?("BEGIN RSA PRIVATE KEY") do
+          client_key = ssh.exec!("chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
+        end
         File.write(Haas.cluster.chef_client_pem_path, client_key)
 
         org_validator_key = ssh.exec!("chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
