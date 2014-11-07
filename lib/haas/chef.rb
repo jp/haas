@@ -62,7 +62,7 @@ class Haas
         node_name               "haas-api"
         client_key                  "#{Haas.cluster.chef_client_pem_path}"
         validation_client_name   "haas-validator"
-        validation_key           "#{Haas.cluster.chef_client_pem_path}"
+        validation_key           "#{Haas.cluster.chef_validator_pem_path}"
         chef_server_url        "https://#{Haas.cluster.get_chef_server.public_dns_name}/organizations/haas"
         cache_type               'BasicFile'
         cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
@@ -85,7 +85,7 @@ class Haas
 
       puts "Bootstrapping node #{node.public_dns_name}"
 
-      user = 'centos'
+      user = 'root'
       run_list = ["recipe[ambari::agent]"]
       run_list << "recipe[ambari::server]" if node.ambari_server
 
@@ -93,7 +93,7 @@ class Haas
       kb = Chef::Knife::Bootstrap.new
       kb.config[:ssh_user] = user
       kb.config[:run_list] = run_list
-      kb.config[:use_sudo] = true
+      kb.config[:use_sudo] = false
       kb.config[:identity_file] = Haas.cluster.identity_file_path
       kb.config[:distro] = 'chef-full'
       kb.name_args = [node.public_dns_name]
