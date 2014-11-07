@@ -51,7 +51,7 @@ class Haas
       if ambari_server.first
         return ambari_server.first
       else
-        node = self.nodes.where('nodes.chef_server=?',false).first
+        node = self.nodes.where('nodes.chef_server IS NULL').first
         node.ambari_server = true
         node.save
         return node
