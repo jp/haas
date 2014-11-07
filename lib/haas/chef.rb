@@ -129,7 +129,7 @@ class Haas
       Chef::CookbookUploader.new(cbs,:force => false, :concurrency => 10).upload_cookbooks
     end
 
-    def self.setup_environment(name)
+    def self.setup_environment
       require 'chef/environment'
       require 'chef/rest'
       ambari_server_fqdn = Haas.cluster.get_ambari_server
