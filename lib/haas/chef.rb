@@ -93,7 +93,7 @@ class Haas
       kb = Chef::Knife::Bootstrap.new
       kb.config[:ssh_user] = user
       kb.config[:run_list] = run_list
-      kb.config[:use_sudo] = false
+      kb.config[:use_sudo] = true
       kb.config[:identity_file] = Haas.cluster.identity_file_path
       kb.config[:distro] = 'chef-full'
       kb.name_args = [node.public_dns_name]
@@ -102,18 +102,17 @@ class Haas
 
     def self.download_cookbook cookbook_name, url
       require 'open-uri'
+      require 'zlib'
       require 'archive/tar/minitar'
 
       cookbooks_dir = File.join(Haas::Config::WORKING_DIR, 'cookbooks')
       Dir.mkdir(cookbooks_dir) unless File.exists?(cookbooks_dir)
-      archive_path = File.join(cookbooks_dir, "#{cookbook_name}.tar")
-      unpack_dir   = File.join(cookbooks_dir, "#{cookbook_name}")
-      open("https://supermarket.getchef.com/cookbooks/ambari/download") {|f|
-         File.open(archive_path,"wb") do |file|
-           file.puts f.read
-         end
-      }
-      Archive::Tar::Minitar.unpack(archive_path, cookbooks_dir)
+      archive_path = File.join(cookbooks_dir, "#{cookbook_name}.tar.gz")
+      open(archive_path, 'wb') do |file|
+        file << open(url).read
+      end
+      tgz = Zlib::GzipReader.new(File.open(archive_path, 'rb'))
+      Archive::Tar::Minitar.unpack(tgz, cookbooks_dir)
     end
 
     def self.upload_cookbook
