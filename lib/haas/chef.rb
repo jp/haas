@@ -34,13 +34,14 @@ class Haas
         :keys => [ Haas.cluster.identity_file_path ],
         :compression => "zlib"
       ) do |ssh|
+        puts "Entering chef server installation on the node #{chef_server.public_dns_name}. This may take a while."
         puts "Disable iptables"
         ssh.exec!("service iptables stop")
-        puts I18n.t('chef.downloading_chef_server')
+        puts "Downloading chef server."
         ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
-        puts I18n.t('chef.installing_chef_server')
+        puts "Installing chef server."
         ssh.exec!("rpm -ivh #{chef_server_local_path}")
-        puts I18n.t('chef.configuring_chef_server')
+        puts "Configuring chef server."
         ssh.exec!("chef-server-ctl reconfigure")
 
         client_key = ""
@@ -82,6 +83,8 @@ class Haas
       require 'net/ssh'
       require 'net/ssh/multi'
 
+      puts "Bootstrapping node #{node.public_dns_name}"
+
       user = 'centos'
       run_list = ["recipe[ambari::agent]"]
       run_list << "recipe[ambari::server]" if node.ambari_server
@@ -117,7 +120,7 @@ class Haas
       require 'chef'
       require 'chef/cookbook_uploader'
 
-      puts I18n.t('chef.uploading_cookbooks')
+      puts "Uploading cookbooks to the chef server."
 
       Chef::Config.from_file(Haas.cluster.knife_config_path)
       cookbook_repo = Chef::CookbookLoader.new(COOKBOOK_PATH)

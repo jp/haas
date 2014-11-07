@@ -2,10 +2,6 @@ class Haas
   class Config
     WORKING_DIR=File.join(File.expand_path('~'), '.haas')
 
-    # remove warning for not providing locales
-    I18n.enforce_available_locales = true
-    I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/*.{rb,yml}" )
-
     # Create Haas folder
 
     Dir.mkdir(Haas::Config::WORKING_DIR) unless File.exists?(Haas::Config::WORKING_DIR)

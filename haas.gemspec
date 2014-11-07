@@ -14,7 +14,6 @@ Gem::Specification.new do |s|
   s.files        << "lib/haas/aws.rb"
   s.files        << "lib/haas/chef.rb"
   s.files        << "lib/haas/blueprints.rb"
-  s.files        << "lib/locales/launcher.yml"
   s.executables = ['haas']
   s.homepage    = 'http://github.com/jp/haas'
   s.license       = 'Apache 2.0'

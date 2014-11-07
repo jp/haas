@@ -18,7 +18,7 @@ class Haas
       Haas::Aws.create_key_pair @cluster
       Haas::Aws.launch_instances(@cluster, region, count, instance_type)
     else
-      puts I18n.t('haas.not_enough_instances_available')
+      puts "There is not enough instances available.\nYou can request a limit increase here : https://aws.amazon.com/support/createCase?serviceLimitIncreaseType=ec2-instances&type=service_limit_increase"
       exit
     end
 
