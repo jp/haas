@@ -1,6 +1,20 @@
 class Haas
   class Blueprints
 
+    def self.post_blueprints
+      ambari = Haas.cluster.get_ambari_server
+      post_json(ambari.public_dns_name,8080,'/api/v1/blueprints/haas-blueprint',get_blueprint)
+      post_json(ambari.public_dns_name,8080,'/api/v1/clusters/haas-cluster',get_cluster)
+    end
+
+    def self.post_json(host, port, url, json)
+      req = Net::HTTP::Post.new(url, initheader = {'Content-Type' =>'application/json'})
+      req.body = URI.encode_www_form json
+      response = Net::HTTP.new(host, port).start {|http| http.request(req) }
+      puts "Response #{response.code} #{response.message}:
+        #{response.body}"
+    end
+
     def self.get_blueprint
       {
         "host_groups" => [
@@ -71,7 +85,7 @@ class Haas
     end
 
 
-    def self.get_cluster(cluster)
+    def self.get_cluster
       masters = []
       slaves = []
       nb_masters = 1
@@ -84,7 +98,7 @@ class Haas
       end
 
       {
-        "blueprint" => "multi-node-hdfs-yarn",
+        "blueprint" => "haas-blueprint",
         "default_password" => "my-super-secret-password",
         "host_groups" => [
           {
