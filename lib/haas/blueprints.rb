@@ -10,6 +10,7 @@ class Haas
     def self.post_json(host, port, url, json)
       req = Net::HTTP::Post.new(url, initheader = {'Content-Type' =>'application/json'})
       req.body = URI.encode_www_form json
+      req.basic_auth("admin", "admin")
       response = Net::HTTP.new(host, port).start {|http| http.request(req) }
       puts "Response #{response.code} #{response.message}:
         #{response.body}"
