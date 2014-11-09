@@ -138,7 +138,7 @@ class Haas
 
       override_attributes = {
         :ambari => {
-          :server_fqdn => ambari_server_fqdn
+          :server_fqdn => ambari_server_fqdn.private_dns_name
         }
       }
 
