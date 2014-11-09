@@ -7,10 +7,12 @@ class Haas
       post_json(ambari.public_dns_name,8080,'/api/v1/clusters/haas-cluster',get_cluster)
     end
 
-    def self.post_json(host, port, url, json)
-      req = Net::HTTP::Post.new(url, initheader = {'Content-Type' =>'application/json'})
-      req.body = URI.encode_www_form json
+    def self.post_json(host, port, url, params)
+      req = Net::HTTP::Post.new(url)
+      req.body = params.to_json
       req.basic_auth("admin", "admin")
+      req["Content-Type"] = "application/json"
+      req["X-Requested-By"] = "HaaS"
       response = Net::HTTP.new(host, port).start {|http| http.request(req) }
       puts "Response #{response.code} #{response.message}:
         #{response.body}"
