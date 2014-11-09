@@ -11,7 +11,7 @@ class Haas
   def self.launch
     count = 2
     region = 'us-west-2'
-    instance_type = 'm3.medium'
+    instance_type = 'm3.large'
 
     @cluster=Haas::Cluster.create
     if Haas::Aws.nb_instance_available >= count
@@ -23,6 +23,7 @@ class Haas
     end
 
     Haas::ChefProvider.setup_cluster
+    Haas::Blueprints.post_blueprints
   end
 
   def self.show
