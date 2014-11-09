@@ -11,7 +11,6 @@ class Haas
       req = Net::HTTP::Post.new(url)
       req.body = params.to_json
       req.basic_auth("admin", "admin")
-      req["Content-Type"] = "application/json"
       req["X-Requested-By"] = "HaaS"
       response = Net::HTTP.new(host, port).start {|http| http.request(req) }
       puts "Response #{response.code} #{response.message}:
@@ -25,7 +24,7 @@ class Haas
             "name" => "master",
             "configurations" => [
               {
-                "nagios-env" => {
+                "global" => {
                   "nagios_contact" => "me@my-awesome-domain.example"
                 }
               }
