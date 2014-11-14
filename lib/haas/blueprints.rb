@@ -11,6 +11,7 @@ class Haas
       puts ' done.'
 
       puts "Wait 20 seconds for the nodes to connect to ambari."
+      sleep 20
       puts "Done."
 
       post_json(ambari.public_dns_name,8080,'/api/v1/blueprints/haas-blueprint',get_blueprint)
