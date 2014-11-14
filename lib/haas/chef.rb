@@ -43,7 +43,7 @@ class Haas
         ssh.exec!("rpm -ivh #{chef_server_local_path}")
         puts "Configuring chef server."
         ssh.exec!("mkdir -p /etc/chef-server/")
-        ssh.exec!(%{echo "nginx['enable_non_ssl'] = false" >> /etc/chef-server/chef-server.rb})
+        ssh.exec!(%{echo "nginx['non_ssl_port'] = false" >> /etc/chef-server/chef-server.rb})
         ssh.exec!("chef-server-ctl reconfigure")
 
         client_key = ""
