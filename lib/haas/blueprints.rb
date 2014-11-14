@@ -61,6 +61,9 @@ class Haas
               },
               {
                 "name" => "ZOOKEEPER_SERVER"
+              },
+              {
+                "name" => "GANGLIA_MONITOR"
               }
             ],
             "cardinality" => "1"
@@ -85,6 +88,9 @@ class Haas
               },
               {
                 "name" => "ZOOKEEPER_CLIENT"
+              },
+              {
+                "name" => "GANGLIA_MONITOR"
               }
             ],
             "cardinality" => "1+"
