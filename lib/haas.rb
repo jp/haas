@@ -6,10 +6,11 @@ require 'models/cluster'
 require 'haas/aws'
 require 'haas/chef'
 require 'haas/blueprints'
+require 'haas/utils'
 
 class Haas
   def self.launch
-    count = 2
+    count = 4
     region = 'us-west-2'
     instance_type = 'm3.large'
 

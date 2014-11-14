@@ -3,6 +3,13 @@ class Haas
 
     def self.post_blueprints
       ambari = Haas.cluster.get_ambari_server
+      puts "Wait until ambari server is launched"
+      while !Haas::Utils.is_port_open?(ambari.public_dns_name,8080)
+        print '.'
+        sleep 1
+      end
+      puts ' done.'
+
       post_json(ambari.public_dns_name,8080,'/api/v1/blueprints/haas-blueprint',get_blueprint)
       post_json(ambari.public_dns_name,8080,'/api/v1/clusters/haas-cluster',get_cluster)
     end
