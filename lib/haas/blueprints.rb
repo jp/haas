@@ -10,6 +10,9 @@ class Haas
       end
       puts ' done.'
 
+      puts "Wait 20 seconds for the nodes to connect to ambari."
+      puts "Done."
+
       post_json(ambari.public_dns_name,8080,'/api/v1/blueprints/haas-blueprint',get_blueprint)
       post_json(ambari.public_dns_name,8080,'/api/v1/clusters/haas-cluster',get_cluster)
     end
