@@ -58,13 +58,13 @@ class Haas
       ec2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
     end
 
-    def self.create_key_pair cluster
-      key_pair = Haas::KeyPair.create(name: cluster.name)
-      File.write(cluster.identity_file_path, key_pair.private_key)
-      File.chmod(0600, cluster.identity_file_path)
+    def self.create_key_pair
+      key_pair = Haas::KeyPair.create(name: Haas.cluster.name)
+      File.write(Haas.cluster.identity_file_path, key_pair.private_key)
+      File.chmod(0600, Haas.cluster.identity_file_path)
     end
 
-    def self.launch_instances(cluster, count, instance_type)
+    def self.launch_instances
       image_id = CENTOS_IMAGES["6.5"][region]
 
       if !ec2.security_groups.filter('group-name', 'haas-security-group').first
@@ -80,8 +80,8 @@ class Haas
 
       instances = ec2.instances.create({
         :image_id => image_id,
-        :instance_type => instance_type,
-        :key_name => cluster.name,
+        :instance_type => Haas::Config.options[:instance_type],
+        :key_name => Haas.cluster.name,
         :security_groups => ['haas-security-group'],
         :block_device_mappings => [
           {
@@ -96,7 +96,7 @@ class Haas
             :virtual_name => "ephemeral0"
           }
         ],
-        :count => count
+        :count => Haas::Config.options[:nb_instances].to_i
       })
 
       print "Waiting for the instances to start "
@@ -115,7 +115,7 @@ class Haas
 
       instances.each do |instance|
         Haas::Node.create(
-          cluster_id: cluster.id,
+          cluster_id: Haas.cluster.id,
           instance_id: instance.id,
           public_ip_address: instance.ip_address,
           public_dns_name: instance.public_dns_name,

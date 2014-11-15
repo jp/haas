@@ -10,14 +10,11 @@ require 'haas/utils'
 
 class Haas
   def self.launch
-    count = 2
-    instance_type = 'm3.medium'
-
     Haas::Aws.connect
     @cluster=Haas::Cluster.create(:aws_region => Haas::Aws.region)
-    if Haas::Aws.nb_instance_available >= count
-      Haas::Aws.create_key_pair @cluster
-      Haas::Aws.launch_instances(@cluster, count, instance_type)
+    if Haas::Aws.nb_instance_available >= Haas::Config.options[:nb_instances].to_i
+      Haas::Aws.create_key_pair
+      Haas::Aws.launch_instances
     else
       puts "There is not enough instances available.\nYou can request a limit increase here : https://aws.amazon.com/support/createCase?serviceLimitIncreaseType=ec2-instances&type=service_limit_increase"
       exit
