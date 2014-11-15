@@ -108,7 +108,7 @@ class Haas
       masters = []
       slaves = []
       nb_masters = 1
-      Haas.cluster.nodes.order(chef_server: :asc).each do |node|
+      Haas.cluster.nodes.each do |node|
         if masters.length < nb_masters
           masters << { "fqdn" => node.private_dns_name }
         else
