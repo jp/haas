@@ -2,6 +2,14 @@ class Haas
   class Config
     WORKING_DIR=File.join(File.expand_path('~'), '.haas')
 
+    def self.set_options options
+      @options = options
+    end
+
+    def self.options
+      @options
+    end
+
     # Create Haas folder
 
     Dir.mkdir(Haas::Config::WORKING_DIR) unless File.exists?(Haas::Config::WORKING_DIR)
@@ -26,6 +34,7 @@ class Haas
 
         create_table :clusters do |table|
           table.column :name, :string
+          table.column :aws_region, :string
         end
         add_index :clusters, :name, unique: true
 

@@ -2,12 +2,6 @@ require 'aws-sdk'
 
 class Haas
   class Aws
-    AWS.config(
-      access_key_id: ENV['AWS_KEY'],
-      secret_access_key: ENV['AWS_SECRET'],
-      region: 'us-west-2'
-    )
-    EC2 = AWS::EC2.new
     CENTOS_IMAGES = {
       "6.5" => {
         "us-east-1"=>"ami-8997afe0",
@@ -31,8 +25,26 @@ class Haas
       }
     }
 
+    def self.connect
+      @region = Haas::Config.options[:aws_region] || 'us-east-1'
+      AWS.config(
+        access_key_id: ENV['AWS_KEY'],
+        secret_access_key: ENV['AWS_SECRET'],
+        region: region
+      )
+      @ec2 = AWS::EC2.new
+    end
+
+    def self.ec2
+      @ec2
+    end
+
+    def self.region
+      @region
+    end
+
     def self.nb_instance_available
-      account_attributes = EC2.client.describe_account_attributes\
+      account_attributes = ec2.client.describe_account_attributes\
       .data[:account_attribute_set]\
       .inject({}) do |m, i|
         m[i[:attribute_name]] = i[:attribute_value_set].first[:attribute_value]; m
@@ -43,7 +55,7 @@ class Haas
     end
 
     def self.nb_running_instances
-      EC2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
+      ec2.instances.inject({}) { |m, i| i.status == :running ? m[i.id] = i.status : nil; m }.length
     end
 
     def self.create_key_pair cluster
@@ -52,11 +64,11 @@ class Haas
       File.chmod(0600, cluster.identity_file_path)
     end
 
-    def self.launch_instances(cluster, region, count, instance_type)
+    def self.launch_instances(cluster, count, instance_type)
       image_id = CENTOS_IMAGES["6.5"][region]
 
-      if !EC2.security_groups.filter('group-name', 'haas-security-group').first
-        security_group = EC2.security_groups.create('haas-security-group')
+      if !ec2.security_groups.filter('group-name', 'haas-security-group').first
+        security_group = ec2.security_groups.create('haas-security-group')
         security_group.authorize_ingress(:tcp, 22)
         security_group.authorize_ingress(:tcp, 80)
         security_group.authorize_ingress(:tcp, 443)
@@ -66,7 +78,7 @@ class Haas
         security_group.authorize_ingress(:icmp, -1, security_group)
       end
 
-      instances = EC2.instances.create({
+      instances = ec2.instances.create({
         :image_id => image_id,
         :instance_type => instance_type,
         :key_name => cluster.name,
@@ -114,7 +126,7 @@ class Haas
     end
 
     def self.terminate_cluster cluster
-      EC2.client.terminate_instances({
+      ec2.client.terminate_instances({
         instance_ids: cluster.nodes.map(&:instance_id)
       })
       cluster.destroy

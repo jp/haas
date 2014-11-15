@@ -9,7 +9,13 @@ class MyCLI
   option :launch,
     :short => "-l",
     :long  => "--launch",
-    :description => "Launch the cluster"
+    :description => "Launch and install a cluster"
+
+  option :aws_region,
+    :short => "-r REGION",
+    :long  => "--aws-region REGION",
+    :description => "The AWS region used",
+    :default => "us-east-1"
 
   option :list,
     :short => "-s",
@@ -34,6 +40,8 @@ end
 
 cli = MyCLI.new
 cli.parse_options
+
+Haas::Config.set_options cli.config
 
 if cli.config[:launch]
   Haas.launch
