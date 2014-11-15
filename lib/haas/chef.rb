@@ -37,9 +37,12 @@ class Haas
         puts "Entering chef server installation on the node #{chef_server.public_dns_name}. This may take a while."
         puts "Disable iptables"
         ssh.exec!("service iptables stop")
-        puts "Downloading chef server."
-        ssh.exec!("curl -L '#{chef_server_url}' -o #{chef_server_local_path}")
-        puts "Installing chef server."
+        puts "Downloading and installing the chef server."
+        ssh.exec!(%{
+          until curl -L '#{chef_server_url}' -o #{chef_server_local_path} && rpm -ivh #{chef_server_local_path}; do
+            echo "installing chef server";
+          done
+        })
         ssh.exec!("rpm -ivh #{chef_server_local_path}")
         puts "Configuring chef server."
         ssh.exec!("mkdir -p /etc/opscode/")
