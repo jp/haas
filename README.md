@@ -91,10 +91,6 @@ To use this instance, you only have to [accept the Terms and Conditions here](ht
 Only the HortonWorks distribution is currently supported.
 If you want to have another distribution supported, feel free to submit a pull request or an issue.
 
-# TODO
-
-Provide cost estimates with awscosts - https://github.com/srbartlett/awscosts
-
 Contributing
 ------------
 
