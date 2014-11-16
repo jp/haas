@@ -4,6 +4,68 @@ Installing a Hadoop cluster has never been so easy.
 
 ![Haas big cluster](http://i.imgur.com/RjdY089.png)
 
+# How to use
+
+## Install HaaS
+
+```
+gem install haas
+```
+
+## Configure your environment with your AWS account
+
+Get your AWS key and secret.
+
+Set the two environment variable ```AWS_KEY``` and ```AWS_SECRET```.
+
+Accept the [Terms and Conditions for the instance image](http://aws.amazon.com/marketplace/pp?sku=eggbgx9svw4xhzs1omttdv29q).
+
+## Launch
+
+```
+haas --launch
+```
+
+# Parameters
+
+<table>
+  <tr>
+    <th>Option</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>--launch</td>
+    <td>Option to start and install a hadoop cluster.</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td>--nb-instances</td>
+    <td>The number of instances you want to have in your cluster.</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>--instance-type</td>
+    <td>The EC2 instance type.</td>
+    <td>m3.large</td>
+  </tr>
+  <tr>
+    <td>--aws-region</td>
+    <td>The AWS region to launch the instances.</td>
+    <td>us-east-1</td>
+  </tr>
+  <tr>
+    <td>--list</td>
+    <td>Show all the configured clusters and instances.</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td>--terminate</td>
+    <td>Terminate and destroy the last cluster launched.</td>
+    <td>N/A</td>
+  </tr>
+</table>
+
 # Known issues and limitations
 
 ## Cloud Provider
@@ -32,10 +94,6 @@ If you want to have another distribution supported, feel free to submit a pull r
 # TODO
 
 Provide cost estimates with awscosts - https://github.com/srbartlett/awscosts
-Security groups:
-- access chef server on port 443
-- access ambari on 8080
-
 
 Contributing
 ------------
