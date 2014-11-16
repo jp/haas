@@ -1,5 +1,34 @@
 # HaaS - Hadoop as a Service
 
+Installing a Hadoop cluster has never been so easy.
+
+![Haas big cluster](http://i.imgur.com/RjdY089.png)
+
+# Known issues and limitations
+
+## Cloud Provider
+
+HaaS is working only with AWS. If you need another cloud provider create an issue about it.
+
+## AWS Limitations
+
+### EC2 Limits
+
+By default, you can launch only 20 instances per region on AWS.
+This tool will check if you have enough instances available before launching a cluster.
+If you need mode, you can [increase your EC2 limit here](https://aws.amazon.com/support/createCase?serviceLimitIncreaseType=ec2-instances&type=service_limit_increase).
+
+### Linux distribution
+
+For cost saving reasons, this tool is using the official CentOS 6.5 image rather than the RedHat or the Suse.
+The CentOS instances are not adding licences fee and are free to use (at the price af a classic Linux EC2).
+To use this instance, you only have to [accept the Terms and Conditions here](http://aws.amazon.com/marketplace/pp?sku=eggbgx9svw4xhzs1omttdv29q).
+
+## Hadoop distribution
+
+Only the HortonWorks distribution is currently supported.
+If you want to have another distribution supported, feel free to submit a pull request or an issue.
+
 # TODO
 
 Provide cost estimates with awscosts - https://github.com/srbartlett/awscosts
