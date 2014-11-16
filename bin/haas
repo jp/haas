@@ -7,12 +7,10 @@ class HaasCLI
   include Mixlib::CLI
 
   option :launch,
-    :short => "-l",
     :long  => "--launch",
     :description => "Launch and install a cluster"
 
   option :nb_instances,
-    :short => "-n COUNT",
     :long  => "--nb-instances COUNT",
     :description => "The number of instances you want to launch",
     :default => "5"
@@ -23,15 +21,13 @@ class HaasCLI
     :default => "m3.medium"
 
   option :aws_region,
-    :short => "-r REGION",
     :long  => "--aws-region REGION",
     :description => "The AWS region used",
     :default => "us-east-1"
 
   option :list,
-    :short => "-s",
-    :long  => "--show",
-    :description => "Show all the running instances"
+    :long  => "--list",
+    :description => "Show all the configured clusters and instances"
 
   option :terminate,
     :short => "-t",
