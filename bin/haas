@@ -18,7 +18,7 @@ class HaasCLI
   option :instance_type,
     :long  => "--instance-type TYPE",
     :description => "The type of the EC2 instance you want to launch",
-    :default => "m3.medium"
+    :default => "m3.large"
 
   option :aws_region,
     :long  => "--aws-region REGION",
