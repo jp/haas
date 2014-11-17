@@ -26,18 +26,13 @@ Accept the [Terms and Conditions for the instance image](http://aws.amazon.com/m
 haas --launch
 ```
 
-# Parameters
+## Optional parameters
 
 <table>
   <tr>
     <th>Option</th>
     <th>Description</th>
     <th>Default</th>
-  </tr>
-  <tr>
-    <td>--launch</td>
-    <td>Option to start and install a hadoop cluster.</td>
-    <td>N/A</td>
   </tr>
   <tr>
     <td>--nb-instances</td>
@@ -53,16 +48,6 @@ haas --launch
     <td>--aws-region</td>
     <td>The AWS region to launch the instances.</td>
     <td>us-east-1</td>
-  </tr>
-  <tr>
-    <td>--list</td>
-    <td>Show all the configured clusters and instances.</td>
-    <td>N/A</td>
-  </tr>
-  <tr>
-    <td>--terminate</td>
-    <td>Terminate and destroy the last cluster launched.</td>
-    <td>N/A</td>
   </tr>
 </table>
 
