@@ -51,6 +51,12 @@ haas --launch
   </tr>
 </table>
 
+## Strop the cluster
+
+```
+haas --terminate
+```
+
 # Known issues and limitations
 
 ## Cloud Provider

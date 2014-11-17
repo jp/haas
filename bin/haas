@@ -30,7 +30,6 @@ class HaasCLI
     :description => "Show all the configured clusters and instances"
 
   option :terminate,
-    :short => "-t",
     :long  => "--terminate",
     :description => "Terminate the cluster"
 
