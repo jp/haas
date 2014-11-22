@@ -53,6 +53,7 @@ class Haas
   end
 
   def self.terminate cluster_name
+    Haas::Aws.connect
     Haas::Aws.terminate_cluster Cluster.first
   end
 
