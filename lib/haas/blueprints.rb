@@ -24,8 +24,6 @@ class Haas
       req.basic_auth("admin", "admin")
       req["X-Requested-By"] = "HaaS"
       response = Net::HTTP.new(host, port).start {|http| http.request(req) }
-      puts "Response #{response.code} #{response.message}:
-        #{response.body}"
     end
 
     def self.get_blueprint

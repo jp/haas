@@ -26,9 +26,11 @@ class Haas
     Haas::ChefProvider.setup_cluster
     Haas::Blueprints.post_blueprints
 
+    puts "\n"
+    puts "=========== installation report =============="
     puts "Ambari is finalizing the installation"
     puts "You can access Ambari to manage your cluster at the following address:"
-    puts "http://#{@cluster.get_ambari_server}:8080/"
+    puts "http://#{@cluster.get_ambari_server.public_dns_name}:8080/"
     puts "user: admin"
     puts "password: admin"
     puts "\n"
