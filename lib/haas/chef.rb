@@ -22,7 +22,7 @@ class Haas
     def self.install_chef_server
       require 'net/ssh'
       chef_server = Haas.cluster.get_chef_server
-      user = 'root'
+      user = Haas.cluster.ssh_user
       chef_server_file = "chef-server-core-12.0.0_rc.5-1.el5.x86_64.rpm"
       chef_server_url = "https://packagecloud.io/chef/stable/download?distro=6&filename=#{chef_server_file}"
       chef_server_local_path = "/tmp/#{chef_server_file}"
@@ -90,7 +90,7 @@ class Haas
 
       puts "Bootstrapping node #{node.public_dns_name}"
 
-      user = 'root'
+      user = Haas.cluster.ssh_user
       run_list = ["recipe[ambari::agent]"]
       run_list << "recipe[ambari::server]" if node.ambari_server
 
