@@ -35,6 +35,7 @@ class Haas
         create_table :clusters do |table|
           table.column :name, :string
           table.column :aws_region, :string
+          table.column :ssh_user, :string
         end
         add_index :clusters, :name, unique: true
 

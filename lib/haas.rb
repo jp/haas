@@ -11,7 +11,10 @@ require 'haas/utils'
 class Haas
   def self.launch
     Haas::Aws.connect
-    @cluster=Haas::Cluster.create(:aws_region => Haas::Aws.region)
+    @cluster=Haas::Cluster.create(
+      :aws_region => Haas::Aws.region,
+      :ssh_user => "root"
+    )
     if Haas::Aws.nb_instance_available >= Haas::Config.options[:nb_instances].to_i
       Haas::Aws.create_key_pair
       Haas::Aws.launch_instances
@@ -22,11 +25,20 @@ class Haas
 
     Haas::ChefProvider.setup_cluster
     Haas::Blueprints.post_blueprints
+
     puts "Ambari is finalizing the installation"
     puts "You can access Ambari to manage your cluster at the following address:"
-    puts "http://#{Haas.cluster.get_ambari_server}:8080/"
+    puts "http://#{@cluster.get_ambari_server}:8080/"
     puts "user: admin"
     puts "password: admin"
+    puts "\n"
+    puts "Nodes of the cluster:"
+    @cluster.nodes.each do |node|
+      puts "    #{node.public_dns_name}"
+    end
+    puts "\n"
+    puts "You can use this SSH key to log into each node as user #{@cluster.ssh_user}"
+    puts @cluster.identity_file_path
   end
 
   def self.show
