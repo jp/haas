@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'haas'
-  s.version = '0.0.1'
+  s.version = '0.0.3'
   s.date = '2014-10-01'
   s.summary = "Launch big data cluster in the cloud"
   s.description = "Automatically launch Hadoop or Spark clusters in the cloud"
