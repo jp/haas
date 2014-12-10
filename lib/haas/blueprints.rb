@@ -28,17 +28,22 @@ class Haas
 
     def self.get_blueprint
       {
+        "configurations" : [
+          {
+            "hive-site": {
+              "javax.jdo.option.ConnectionPassword": "hive"
+            }
+          },
+          {
+            "nagios-env" : {
+               "nagios_contact" : "admin@localhost"
+            }
+          }
+        ],
         "host_groups" => [
           {
             "name" => "master",
-            "configurations" => [
-              {
-                "global" => {
-                  "nagios_contact" => "me@my-awesome-domain.example"
-                }
-              }
-            ],
-              "components" => [
+            "components" => [
               {
                 "name" => "NAMENODE"
               },
@@ -96,7 +101,7 @@ class Haas
         ],
        "Blueprints" => {
           "stack_name" => "HDP",
-          "stack_version" => "2.1"
+          "stack_version" => "2.2"
         }
       }
     end
