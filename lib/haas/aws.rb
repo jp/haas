@@ -25,6 +25,20 @@ class Haas
       }
     }
 
+    UBUNTU_IMAGES = {
+      "12.04" => {
+        "ap-northeast-1" => "ami-f96b40f8",
+        "ap-southeast-1" => "ami-da1e3988",
+        "eu-central-1" => "ami-643c0a79",
+        "eu-west-1" => "ami-6ca1011b",
+        "sa-east-1" => "ami-11d4610c",
+        "us-east-1" => "ami-34cc7a5c",
+        "us-west-1" => "ami-b7515af2",
+        "ap-southeast-2" => "ami-9f0e6ca5",
+        "us-west-2" => "ami-0f47053f"
+      }
+    }
+
     def self.connect
       @region = Haas::Config.options[:aws_region] || 'us-east-1'
       AWS.config(
