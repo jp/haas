@@ -4,6 +4,7 @@ class Haas
   class Aws
     CENTOS_IMAGES = {
       "6.5" => {
+        "ssh_user" => "root",
         "us-east-1"=>"ami-8997afe0",
         "us-west-2"=>"ami-b6bdde86",
         "us-west-1"=>"ami-1a013c5f",
@@ -14,6 +15,7 @@ class Haas
         "sa-east-1"=>"ami-7d02a260"
       },
       "7" => {
+        "ssh_user" => "root",
         "us-east-1"=>"ami-96a818fe",
         "us-west-2"=>"ami-c7d092f7",
         "us-west-1"=>"ami-6bcfc42e",
@@ -27,6 +29,7 @@ class Haas
 
     UBUNTU_IMAGES = {
       "12.04" => {
+        "ssh_user" => "ubuntu",
         "ap-northeast-1" => "ami-f96b40f8",
         "ap-southeast-1" => "ami-da1e3988",
         "eu-central-1" => "ami-643c0a79",
@@ -57,6 +60,10 @@ class Haas
       @region
     end
 
+    def self.ssh_user
+      UBUNTU_IMAGES["12.04"]["ssh_user"]
+    end
+
     def self.nb_instance_available
       account_attributes = ec2.client.describe_account_attributes\
       .data[:account_attribute_set]\
@@ -79,7 +86,7 @@ class Haas
     end
 
     def self.launch_instances
-      image_id = CENTOS_IMAGES["6.5"][region]
+      image_id = UBUNTU_IMAGES["12.04"][region]
 
       if !ec2.security_groups.filter('group-name', 'haas-security-group').first
         security_group = ec2.security_groups.create('haas-security-group')

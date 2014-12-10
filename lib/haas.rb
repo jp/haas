@@ -13,7 +13,8 @@ class Haas
     Haas::Aws.connect
     @cluster=Haas::Cluster.create(
       :aws_region => Haas::Aws.region,
-      :ssh_user => "root"
+      :ssh_user => Haas::Aws.ssh_user,
+      :distro => "ubuntu12"
     )
     if Haas::Aws.nb_instance_available >= Haas::Config.options[:nb_instances].to_i
       Haas::Aws.create_key_pair

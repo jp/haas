@@ -36,6 +36,7 @@ class Haas
           table.column :name, :string
           table.column :aws_region, :string
           table.column :ssh_user, :string
+          table.column :distro, :string
         end
         add_index :clusters, :name, unique: true
 

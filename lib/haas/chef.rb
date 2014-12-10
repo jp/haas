@@ -19,13 +19,18 @@ class Haas
       threads.each { |thr| thr.join }
     end
 
+    def self.chef_install_cmd
+      install_cmd = {
+        'centos6'    => 'curl https://packagecloud.io/install/repositories/chef/stable/script.rpm | sudo bash && sudo yum install chef-server-core-12.0.0-1.el6.x86_6',
+        'ubuntu12' => 'curl https://packagecloud.io/install/repositories/chef/stable/script.deb | sudo bash && sudo apt-get install chef-server-core=12.0.0-1'
+      }
+      install_cmd[Haas.cluster.distro]
+    end
+
     def self.install_chef_server
       require 'net/ssh'
       chef_server = Haas.cluster.get_chef_server
       user = Haas.cluster.ssh_user
-      chef_server_file = "chef-server-core-12.0.0_rc.5-1.el5.x86_64.rpm"
-      chef_server_url = "https://packagecloud.io/chef/stable/download?distro=6&filename=#{chef_server_file}"
-      chef_server_local_path = "/tmp/#{chef_server_file}"
 
       Net::SSH.start(
         chef_server.public_dns_name, user,
@@ -36,26 +41,21 @@ class Haas
       ) do |ssh|
         puts "Entering chef server installation on the node #{chef_server.public_dns_name}. This may take a while."
         puts "Disable iptables"
-        ssh.exec!("service iptables stop")
+        ssh.exec!("sudo service iptables stop")
         puts "Downloading and installing the chef server."
-        ssh.exec!(%{
-          until curl -L '#{chef_server_url}' -o #{chef_server_local_path} && rpm -ivh #{chef_server_local_path}; do
-            echo "installing chef server";
-          done
-        })
-        ssh.exec!("rpm -ivh #{chef_server_local_path}")
+        ssh.exec!(self.chef_install_cmd)
         puts "Configuring chef server."
-        ssh.exec!("mkdir -p /etc/opscode/")
-        ssh.exec!(%{echo "nginx['non_ssl_port'] = false" >> /etc/opscode/chef-server.rb})
-        ssh.exec!("chef-server-ctl reconfigure")
+        ssh.exec!("sudo mkdir -p /etc/opscode/")
+        ssh.exec!(%{sudo bash -c "echo \\"nginx['non_ssl_port'] = false\\" >> /etc/opscode/chef-server.rb"})
+        ssh.exec!("sudo chef-server-ctl reconfigure")
 
         client_key = ""
         while !client_key.include?("BEGIN RSA PRIVATE KEY") do
-          client_key = ssh.exec!("chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
+          client_key = ssh.exec!("sudo chef-server-ctl user-create haas-api HAAS Api haas@ossom.io abc123")
         end
         File.write(Haas.cluster.chef_client_pem_path, client_key)
 
-        org_validator_key = ssh.exec!("chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
+        org_validator_key = ssh.exec!("sudo chef-server-ctl org-create haas Hadoop as a Service --association_user haas-api")
         File.write(Haas.cluster.chef_validator_pem_path, org_validator_key)
       end
     end
