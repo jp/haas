@@ -5,6 +5,8 @@
 See multinode default configuration here : https://github.com/apache/ambari/blob/branch-1.7.0/ambari-client/groovy-client/src/test/resources/hdp-multinode-default2.json
 Configuration here ? https://github.com/apache/ambari/blob/2c1dd171adaf8e94c3df4a036b0afe0ab183f84a/ambari-web/app/assets/data/configuration/global.json
 
+Ambari 1.7 blueprint here : https://github.com/HortonworksUniversity/Ambari1.7.0/blob/master/dockerfiles/ambari_1.7.0_server_node/blueprints/multinode.blueprint
+
 ## Use instance not requiring to accept terms and services
 
 /home/jpellet/.rbenv/versions/2.1.1/lib/ruby/gems/2.1.0/gems/aws-sdk-v1-1.55.0/lib/aws/core/client.rb:375:in `return_or_raise': In order to use this AWS Marketplace product you need to accept terms and subscribe. To do so please visit http://aws.amazon.com/marketplace/pp?sku=eggbgx9svw4xhzs1omttdv29q (AWS::EC2::Errors::OptInRequired)

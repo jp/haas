@@ -6,7 +6,10 @@ class Haas
     def self.setup_cluster
       install_chef_server
       write_knife_config_file
-      cookbooks=[{'name' => 'ambari','url' => "https://supermarket.getchef.com/cookbooks/ambari/download" }]
+      cookbooks=[
+        {'name' => 'ambari', 'url' => "https://supermarket.getchef.com/cookbooks/ambari/download" },
+        {'name' => 'apt', 'url' => "https://supermarket.getchef.com/cookbooks/apt/download" }
+      ]
       cookbooks.each do |cb|
         download_cookbook cb['name'], cb['url']
       end
