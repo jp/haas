@@ -18,8 +18,6 @@ Get your AWS key and secret.
 
 Set the two environment variable ```AWS_KEY``` and ```AWS_SECRET```.
 
-Accept the [Terms and Conditions for the instance image](http://aws.amazon.com/marketplace/pp?sku=eggbgx9svw4xhzs1omttdv29q).
-
 ## Launch
 
 ```
@@ -51,7 +49,7 @@ haas --launch
   </tr>
 </table>
 
-## Strop the cluster
+## Stop the cluster
 
 ```
 haas --terminate
@@ -69,13 +67,7 @@ HaaS is working only with AWS. If you need another cloud provider create an issu
 
 By default, you can launch only 20 instances per region on AWS.
 This tool will check if you have enough instances available before launching a cluster.
-If you need mode, you can [increase your EC2 limit here](https://aws.amazon.com/support/createCase?serviceLimitIncreaseType=ec2-instances&type=service_limit_increase).
-
-### Linux distribution
-
-For cost saving reasons, this tool is using the official CentOS 6.5 image rather than the RedHat or the Suse.
-The CentOS instances are not adding licences fee and are free to use (at the price af a classic Linux EC2).
-To use this instance, you only have to [accept the Terms and Conditions here](http://aws.amazon.com/marketplace/pp?sku=eggbgx9svw4xhzs1omttdv29q).
+If you need more, you can [increase your EC2 limit here](https://aws.amazon.com/support/createCase?serviceLimitIncreaseType=ec2-instances&type=service_limit_increase).
 
 ## Hadoop distribution
 
@@ -85,7 +77,7 @@ If you want to have another distribution supported, feel free to submit a pull r
 Contributing
 ------------
 
-If you wish to contribute on this cookbook:
+If you wish to contribute on this gem:
 
 1. Fork the repository on Github
 2. Create a named feature branch (like `add_component_x`)
