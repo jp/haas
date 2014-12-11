@@ -4,7 +4,10 @@ class Haas
   class Aws
     CENTOS_IMAGES = {
       "6.5" => {
-        "ssh_user" => "root",
+        "config" => {
+          "ssh_user" => "root",
+          "root_device" => "/dev/sda"
+        },
         "us-east-1"=>"ami-8997afe0",
         "us-west-2"=>"ami-b6bdde86",
         "us-west-1"=>"ami-1a013c5f",
@@ -15,7 +18,10 @@ class Haas
         "sa-east-1"=>"ami-7d02a260"
       },
       "7" => {
-        "ssh_user" => "root",
+        "config" => {
+          "ssh_user" => "root",
+          "root_device" => "/dev/sda"
+        },
         "us-east-1"=>"ami-96a818fe",
         "us-west-2"=>"ami-c7d092f7",
         "us-west-1"=>"ami-6bcfc42e",
@@ -29,7 +35,10 @@ class Haas
 
     UBUNTU_IMAGES = {
       "12.04" => {
-        "ssh_user" => "ubuntu",
+        "config" => {
+          "ssh_user" => "ubuntu",
+          "root_device" => "/dev/sda1"
+        },
         "ap-northeast-1" => "ami-f96b40f8",
         "ap-southeast-1" => "ami-da1e3988",
         "eu-central-1" => "ami-643c0a79",
@@ -61,7 +70,7 @@ class Haas
     end
 
     def self.ssh_user
-      UBUNTU_IMAGES["12.04"]["ssh_user"]
+      UBUNTU_IMAGES["12.04"]["config"]["ssh_user"]
     end
 
     def self.nb_instance_available
