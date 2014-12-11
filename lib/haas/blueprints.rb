@@ -28,15 +28,15 @@ class Haas
 
     def self.get_blueprint
       {
-        "configurations" : [
+        "configurations" => [
           {
-            "hive-site": {
-              "javax.jdo.option.ConnectionPassword": "hive"
+            "hive-site"=> {
+              "javax.jdo.option.ConnectionPassword"=> "hive"
             }
           },
           {
-            "nagios-env" : {
-               "nagios_contact" : "admin@localhost"
+            "nagios-env" => {
+               "nagios_contact" => "admin@localhost"
             }
           }
         ],
