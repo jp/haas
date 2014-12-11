@@ -106,7 +106,7 @@ class Haas
         :security_groups => ['haas-security-group'],
         :block_device_mappings => [
           {
-            :device_name => "/dev/sda",
+            :device_name => "/dev/sda1",
             :ebs => {
               :volume_size => 8, # 8 GiB
               :delete_on_termination => true
