@@ -67,6 +67,9 @@ class Haas
               },
               {
                 "name" => "GANGLIA_MONITOR"
+              },
+              {
+                "name" => "APP_TIMELINE_SERVER"
               }
             ],
             "cardinality" => "1"
