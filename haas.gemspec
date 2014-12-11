@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'haas'
-  s.version = '0.0.5'
-  s.date = '2014-11-22'
+  s.version = '0.0.6'
+  s.date = '2014-12-10'
   s.summary = "Launch big data cluster in the cloud"
   s.description = "Automatically launch Hadoop or Spark clusters in the cloud"
   s.author = "Julien Pellet"
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.license = 'Apache 2.0'
   s.files = Dir.glob("lib/**/*", File::FNM_DOTMATCH).reject {|f| File.directory?(f) }
 
-  s.add_dependency "activerecord", "~> 4.1"
+  s.add_dependency "activerecord", "~> 4.1.8"
   s.add_dependency "sqlite3", "~> 1.3"
   s.add_dependency "aws-sdk", "~> 1.55"
   s.add_dependency "net-ssh", "~> 2.9"
