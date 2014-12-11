@@ -33,10 +33,9 @@ class Haas
     def self.install_chef_server
       require 'net/ssh'
       chef_server = Haas.cluster.get_chef_server
-      user = Haas.cluster.ssh_user
 
       Net::SSH.start(
-        chef_server.public_dns_name, user,
+        chef_server.public_dns_name, Haas.cluster.ssh_user,
         :host_key => "ssh-rsa",
         :encryption => "blowfish-cbc",
         :keys => [ Haas.cluster.identity_file_path ],
@@ -93,13 +92,12 @@ class Haas
 
       puts "Bootstrapping node #{node.public_dns_name}"
 
-      user = Haas.cluster.ssh_user
       run_list = ["recipe[ambari::agent]"]
       run_list << "recipe[ambari::server]" if node.ambari_server
 
       Chef::Config.from_file(Haas.cluster.knife_config_path)
       kb = Chef::Knife::Bootstrap.new
-      kb.config[:ssh_user] = user
+      kb.config[:ssh_user] = Haas.cluster.ssh_user
       kb.config[:run_list] = run_list
       kb.config[:use_sudo] = true
       kb.config[:identity_file] = Haas.cluster.identity_file_path
