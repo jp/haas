@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh", "~> 2.9"
   s.add_dependency "chef", "~> 11.16"
   s.add_dependency "mixlib-cli", "~> 1.5"
+  s.add_dependency "minitar", "~> 0.5"
 
   s.add_development_dependency "factory_girl", "~> 4.4"
   s.add_development_dependency "faker", "~> 1.3"
